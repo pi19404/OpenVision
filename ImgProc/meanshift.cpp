@@ -39,7 +39,7 @@ Rect ocvmeanShift::run(Mat image)
 
 
 
-    imshow("AA",roi);
+//    imshow("AA",roi);
     //computing the mean
     cv::Moments m;
     m=cv::moments(roi,false);
@@ -67,10 +67,14 @@ Rect ocvmeanShift::run(Mat image)
     int ny=p.y-dy;
 
     //bounday of the image
-    if(nx-region.width/2<=0) nx=region.width/2;
-    if(nx+region.width/2>=image.cols) nx=image.cols-region.width/2-1;
-    if(ny-region.height/2<=0) ny=region.height/2;
-    if(ny+region.height/2>=image.rows) ny=image.rows-region.height/2-1;
+    if(nx-region.width/2<=0)
+        nx=(region.width/2);
+    if(nx+region.width/2>=image.cols)
+        nx=image.cols-(region.width/2)-1;
+    if(ny-region.height/2<=0)
+        ny=(region.height/2);
+    if(ny+region.height/2>=image.rows)
+        ny=image.rows-(region.height/2)-1;
 
     //recalculating the mean shift
     dx=-nx+p.x;

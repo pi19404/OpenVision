@@ -69,33 +69,81 @@ void callbackButton2(int state,void* userdata)
 
 }
 
-int test_meanshift()
+int test_meanshift(int argc,char **argv)
 {
 
+
         VideoCapture cam;
+	VideoWriter outputVideo;                                        // Open the output
+	int mode=0;
+        if(argc<2)
+	mode=0;
+	else
+	mode=1;
+
+
+	if(mode==0)
         cam = *new VideoCapture(0);
+	else
+	cam = *new VideoCapture(argv[1]);
+
         if( !cam.isOpened() ) {
-            cout << "Failed to open camera" << endl;
+            cout << "Failed to open camera/video "<<argv[1]  << endl;
             return 0;
         }
 
         Mat img1;//=imread("/media/software/Dropbox/Dropbox/repository/im/documents/images/image020.jpg",1);
 
+if(mode==1)
+{
+ int ex = static_cast<int>(cam.get(CV_CAP_PROP_FOURCC));     // Get Codec Type- Int form
+
+    // Transform from int to char via Bitwise operators
+    char EXT[] = {(char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000)>> 24), 0};
+
+    Size S = Size((int) cam.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
+                  (int) cam.get(CV_CAP_PROP_FRAME_HEIGHT));
+
+ 
+
+    outputVideo.open("out.avi", CV_FOURCC('D','I','V','X'), cam.get(CV_CAP_PROP_FPS), S, true);
+
+    if (!outputVideo.isOpened())
+    {
+        cout  << "Could not open the output video for write: " <<endl;
+        return -1;
+    }
+}
         Mat hsvImg;
         MatND hist1;
         char key = 10;
         cam >> img;
+	img.copyTo(img1);
+
         //img1.copyTo(img);
         namedWindow("tracker",0);
         cvSetMouseCallback("tracker",mouseEventHandler,&img);
         cvCreateButton("Build Model",callbackButton2,0, CV_PUSH_BUTTON, 0);
         char text[100];
         sprintf(text,"similarity is %f",0);
+	 model=false;
         while(key != 27) {
+	   if(mode==0)	
+	   {	
             cam >> img;
-    //        img1.copyTo(img);
             cv::flip(img,img,1);
-            if(pressed==true || areaDefined==true)
+	    }
+	    if(mode==1 && model==true)
+	    {
+		cam >> img;
+	    }
+	    if(img.rows==0)
+		break;
+	    if(mode==1 && model==false )
+	    {
+		img1.copyTo(img);
+	    }
+            if((pressed==true || areaDefined==true) && model==false)
             {
                 rectangle(img,*sArea,Scalar(0,255,0),3);
             }
@@ -108,14 +156,18 @@ int test_meanshift()
                 cv::rectangle(img,r,Scalar(0,255,255),3,8);
             }
             imshow("tracker",img);
+	   if(mode==1)
+	   outputVideo << img;
             key = cvWaitKey(10);
 
         }
+	if(mode==1)
+	outputVideo.release();
 }
 
 int main(int argc,char **argv)
 {
-    test_meanshift();
+    test_meanshift(argc,argv);
     return 0;
 }
 
