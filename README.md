@@ -21,5 +21,5 @@ Following Models are currently present in OpenVisionLibrary
 2 > Mean shift tracking algorithm
 
 
-some of the documentation can be found on blog : http:/pi-virtualworld@blogspot.com or PDF format documents 
-can be found at http:/scribd.com/pi19404
+some of the documentation can be found on blog : http://pi-virtualworld@blogspot.com or PDF format documents 
+can be found at http://scribd.com/pi19404
