@@ -18,6 +18,7 @@ Following Models are currently present in OpenVisionLibrary
 
 
 1 > 1-D,2-D Histograms
+
 2 > Mean shift tracking algorithm
 
 
