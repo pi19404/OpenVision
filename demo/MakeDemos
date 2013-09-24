@@ -1,0 +1,30 @@
+
+.SUFFIXES: .o .c .cpp .cc .cxx .C
+
+INCLUDES=-I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/opencv2 -I. -I../ImgProc -I../Common -I..
+
+LFLAGS= 
+LIBS = -lm -lrt -L/usr/local/lib -lopencv_calib3d -lopencv_contrib -lopencv_core -lopencv_features2d -lopencv_flann -lopencv_gpu -lopencv_highgui -lopencv_imgproc -lopencv_legacy -lopencv_ml -lopencv_nonfree -lopencv_objdetect -lopencv_photo -lopencv_stitching -lopencv_ts -lopencv_video -lopencv_videostab
+
+SOURCES=../ImgProc/Histogram.cpp
+
+test_histogram : Histogram.o test_histogram.o
+	gcc $(INCLUDES)   $^ -o $@ $(LIBS)
+    
+kde_demo : Histogram.o kde_demo.o
+	gcc $(INCLUDES)   $^ -o $@ $(LIBS)
+
+.cpp.o:
+	gcc -c $(INCLUDES) -o "$@" "$<"
+
+Histogram.o:../ImgProc/Histogram.cpp
+	gcc -c $(INCLUDES) -o "$@" "$<"
+
+
+
+#gcc  ${INCLUDES} Histogram.cpp test_histogram.cpp 
+
+
+#gcc -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/opencv2 -I. -I../ImgProc -I../Common #Histogram.cpp test_histogram.cpp -L/usr/local/lib `pkg-config --libs opencv`
+
+

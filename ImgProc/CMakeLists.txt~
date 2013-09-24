@@ -1,0 +1,2 @@
+add_library ( ImgProc Histogram.cpp meanshift.cpp)
+target_link_libraries(OpenVisionLibrary ${OpenCV_LIBS} )
