@@ -1,0 +1,960 @@
+\documentclass[fontsize=12pt, % Document font size
+                             paper=a4, % Document paper type
+                             oneside, % Shifts odd pages to the left for easier reading when printed, can be changed to oneside
+                             captions=tableheading,
+                             index=totoc,
+                             hyperref]{labbook}
+ 
+\usepackage[bottom=10em]{geometry} % Reduces the whitespace at the bottom of the page so more text can fit
+%\usepackage{media9}
+%\usepackage[dvipdfmx]{media9} 
+%\usepackage[svgnames]{xcolor}
+\usepackage[english]{babel} % English language
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+
+
+%\usepackage[utf8]{inputenc} % Uses the utf8 input encoding
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+%\usepackage{lmodern}
+%\usepackage{fontspec}
+\usepackage{emerald}
+%usepackage{va}
+%\usepackage{frcursive}
+%\usepackage{calligra}
+
+%\setmainfont{\ECFTeenSpirit}
+
+%\renewcommand{\fontfamily{emerald}}{\ECFTeenSpirit}
+
+%\renewcommand{\rmdefault}{emerald}
+%\renewcommand{\familydefault}{pag}
+
+%\usepackage[osf]{mathpazo} % Palatino as the main font
+%\linespread{1.05}\selectfont % Palatino needs some extra spacing, here 5% extra
+%\usepackage[scaled=.88]{beramono} % Bera-Monospace
+%\usepackage[scaled=.86]{berasans} % Bera Sans-Serif
+
+\usepackage{booktabs,array} % Packages for tables
+
+\usepackage{amsmath} % For typesetting math
+
+\newcommand{\fullpage}[1]{
+\begin{frame}
+ #1
+\end{frame}
+}
+\usepackage{movie15}  
+
+\usepackage{etoolbox}
+\usepackage[norule]{footmisc} % Removes the horizontal rule from footnotes
+\usepackage{lastpage} % Counts the number of pages of the document
+\usepackage{color}
+\usepackage{listings}
+
+\definecolor{Code}{rgb}{0,0,0}
+\definecolor{Decorators}{rgb}{0.5,0.5,0.5}
+\definecolor{Numbers}{rgb}{0.5,0,0}
+\definecolor{MatchingBrackets}{rgb}{0.25,0.5,0.5}
+\definecolor{Keywords}{rgb}{0,0,1}
+\definecolor{self}{rgb}{0,0,0}
+\definecolor{Strings}{rgb}{0,0.63,0}
+\definecolor{Comments}{rgb}{0,0.63,1}
+\definecolor{Backquotes}{rgb}{0,0,0}
+\definecolor{Classname}{rgb}{0,0,0}
+\definecolor{FunctionName}{rgb}{0,0,0}
+\definecolor{Operators}{rgb}{0,0,0}
+\definecolor{Background}{rgb}{0.98,0.98,0.98}
+
+
+
+%\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[dvipsnames]{xcolor}  % Allows the definition of hex colors
+\definecolor{titleblue}{rgb}{0.16,0.24,0.64} % Custom color for the title on the title page
+\definecolor{linkcolor}{rgb}{0,0,0.42} % Custom color for links - dark blue at the moment
+%\setkomafont{main}{\ECFAugie}
+%\renewcommand*{\familydefault}{\normalfont}
+%\setkomafont{}{\normalfont\ECFAugie}
+%\renewcommand*{\seriesdefault}{\ECFAugie}
+%\addtokomafont{hyperref}{\color{Sepia}}
+\addtokomafont{title}{\ECFAugie\color{Mahogany}} % Titles in custom blue color
+\addtokomafont{chapter}{\ECFAugie\color{LimeGreen}} % Lab dates in olive green
+\addtokomafont{section}{\ECFAugie\color{Cyan}} % Sections in sepia
+\addtokomafont{subsection}{\ECFAugie\color{LimeGreen}} % Sections in sepia
+\addtokomafont{subsubsection}{\ECFAugie\color{Orange}} % Sections in sepia
+\addtokomafont{pagehead}{\ECFAugie\color{Red}} % Header text in gray and sans serif
+\addtokomafont{caption}{\ECFAugie\footnotesize\itshape} % Small italic font size for captions
+\addtokomafont{captionlabel}{\ECFAugie\upshape\bfseries} % Bold for caption labels
+\addtokomafont{descriptionlabel}{\ECFAugie}
+\setcapwidth[r]{10cm} % Right align caption text
+\setkomafont{footnote}{\sffamily} % Footnotes in sans serif
+
+\deffootnote[4cm]{4cm}{1em}{\textsuperscript{\thefootnotemark}} % Indent footnotes to line up with text
+
+\DeclareFixedFont{\textcap}{T1}{fjd}{bx}{n}{1.5cm} % Font for main title: Helvetica 1.5 cm
+\DeclareFixedFont{\textaut}{T1}{fjd}{bx}{n}{0.8cm} % Font for author name: Helvetica 0.8 cm
+
+\usepackage[nouppercase,headsepline]{scrpage2} % Provides headers and footers configuration
+\pagestyle{scrheadings} % Print the headers and footers on all pages
+\clearscrheadfoot % Clean old definitions if they exist
+
+\automark[chapter]{chapter}
+\ohead{\headmark} % Prints outer header
+
+\setlength{\headheight}{25pt} % Makes the header take up a bit of extra space for aesthetics
+\setheadsepline{.4pt} % Creates a thin rule under the header
+\addtokomafont{headsepline}{\ECFAugie\color{lightgray}} % Colors the rule under the header light gray
+
+\ofoot[\normalfont\normalcolor{\thepage\ |\  \pageref{LastPage}}]{\normalfont\normalcolor{\thepage\ |\  \pageref{LastPage}}} % Creates an outer footer of: "current page | total pages"
+
+% These lines make it so each new lab day directly follows the previous one i.e. does not start on a new page - comment them out to separate lab days on new pages
+\makeatletter
+\patchcmd{\addchap}{\if@openright\cleardoublepage\else\clearpage\fi}{\par}{}{}
+\makeatother
+\renewcommand*{\chapterpagestyle}{scrheadings}
+
+% These lines make it so every figure and equation in the document is numbered consecutively rather than restarting at 1 for each lab day - comment them out to remove this behavior
+\usepackage{chngcntr}
+\counterwithout{figure}{labday}
+\counterwithout{equation}{labday}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+ 
+\lstset{ %
+  language=C++,                % the language of the code
+  basicstyle=\footnotesize\ttfamily,           % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line 
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{black},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{dkgreen},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+  morekeywords={Rect,...},              % if you want to add more keywords to the set
+  deletekeywords={...}              % if you want to delete keywords from the given language
+}
+
+%Hyperlink configuration
+\usepackage[
+    pdfauthor={pi19404}, % Your name for the author field in the PDF
+   % pdftitle={Article}, % PDF title
+   % pdfsubject={}, % PDF subject
+    %bookmarksopen=true,
+    %linktocpage=true,
+    urlcolor=Goldenrod, % Color of URLs
+    citecolor=Goldenrod, % Color of citations
+    linkcolor=Goldenrod, % Color of links to other pages/figures
+    %backref=page,
+    pdfpagelabels=true,
+    plainpages=false,
+    colorlinks=true, % Turn off all coloring by changing this to false
+    bookmarks=true,
+    pdfview=FitB]{hyperref}
+
+%\usepackage[stretch=10]{microtype} % Slightly tweak font spacing for aesthetics
+
+%\usepackage{pdfpages}                    % prikaz \includepdf
+%\usepackage{attachfile}
+%\usepackage{embedfile}
+%\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{movie15}
+%\usepackage{media9}
+%\usepackage[sort,sectionbib,square,round,authoryear]{natbib}
+%\usepackage[sort]{cite}
+
+%\usepackage{natbib}
+\usepackage{filecontents}
+\usepackage[natbib=true,citestyle=authoryear,bibstyle=numeric]{biblatex} 
+%pdflatex dtw.tex;bibtex dtw.aux;pdflatex dtw.tex
+\usepackage{graphicx}
+% declare known graphics extensions
+\DeclareGraphicsExtensions{.jpg,.jpeg,.pdf,.png,.mps,.gif}
+\newcommand{\vurl}[1]{\url{#1}}
+\usepackage{animate}
+\usepackage{eso-pic}
+\newcommand\BackgroundPic{
+\put(0,0){
+\parbox[b][\paperheight]{\paperwidth}{%
+\vfill
+\centering
+\includegraphics[width=\paperwidth,height=\paperheight]{../back.jpg}%
+\vfill
+}}}
+\usepackage{graphicx}
+
+
+\usepackage{animate}
+\renewcommand*{\compcitedelim}{\addsemicolon\space}
+%\setlength\parindent{0pt} % Uncomment to remove all indentation from paragraphs
+\usepackage{minted}
+\ECFAugie\color{lightgray}
+\bibliography{test} 
+\begin{document}
+\AddToShipoutPicture{\BackgroundPic}
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\ECFAugie\color{lightgray}
+\title{\textcap{Mean Shift Tracking\\[2cm]  
+%\textaut{Beginning 30-05-2012}
+}}
+\author{
+    \textaut{Pi19404}\\ \\ % Your name
+    %Master of Science % Your degree
+}
+%\ECFJD{\today} % No date by default, add \today if you wish to include the publication date
+
+\maketitle % Title page
+\printindex
+\tableofcontents % Table of contents
+\newpage % Start lab look on a new page
+%
+%\begin{addmargin}[0cm]{0cm} % Makes the text width much shorter for a compact look
+%
+\pagestyle{scrheadings} % Begin using headers
+%
+\ECFAugie\color{White}
+
+\labday{Mean Shift Tracking}
+
+%\ECFTeenSpirit
+%\section{Augie} {\ECFJD\lipsum[4]}
+%\section{Auriocus Kalligraphicus} {\Fontauri\lipsum[4]}
+%\section{BrushScriptX-Italic} {\bsifamily\lipsum[4]}
+
+\section{Introduction}
+In the article we will look at the application of Mean Shift Tracking for color based
+tracking.
+\section{Mean shift}
+The object model used in mean shift tracking  is color probability distribution.
+\\\\
+Now we have a object model,given an image we can compute the likelihood image
+Each pixel in likelihood image represents the likelihood that pixel belongs
+to the object model/histogram.
+\[
+ L_u(y_i) = p_u*\delta(b(y_i)-u)
+\]
+\begin{figure}[!htbp]
+\begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{image016.png}
+                \caption{original image}                
+        \end{subfigure}%
+  \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{image015.png}
+                \caption{likelihood image}                
+        \end{subfigure}%
+  \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{image017.png}
+                \caption{Hue histogram}                
+        \end{subfigure}%
+
+        \caption{Object model}\label{fig:image1}
+\end{figure}
+This likelihood image assigns to each pixel a similarity measure wrt object model.
+\\\\
+It is reasonable to assume that the region in which the highest similarity measure 
+or highest density is observed is a good estimate of object location.
+\\\\
+\begin{minted}[linenos=true,
+mathescape,
+numbersep=5pt,
+frame=single,
+framesep=2mm
+]{c++}
+//building the object appearance model
+void ocvmeanShift::buildModel(Mat image,Rect rect)
+{
+    //input region of interest
+    region=rect;
+    //center of region is current location estimate
+    p.x=region.x+region.width/2;
+    p.y=region.y+region.height/2;
+    //extract ROI
+    Mat roi=image(rect);    
+    //compute the histogram ,h is object of type Histogram
+    h.BuildHistogram(roi);
+}
+
+//call to compute the likelihood after computing the model
+Mat sim=h.likeyhoodImage(image);
+    
+\end{minted}
+Thus if we consider a small window and move towards the mean value
+ie along the mean shift vector we should eventually reach the region of maximum similarity.
+\\\\
+The  likelihood surface is not smooth,we can give it properties
+of smoothness using kernel density estimation.
+\\\\
+Now we can find the modes of the similarity surface using standard
+mean shift algorithm.
+\\\\
+Let us assume that current estimate of mode of function is at $y$.
+Thus we consider a small rectangular window about $y$,compute
+the mean shift vector and take a small step along the mean shift vector.
+\\\\
+In principle this should enable to find the local maximum.
+Similarity surface is discontinuous and to do this we need to perform KDE over entire image
+consisting of dense grid of points ,which is a  expensive operation.(We need to perform
+convolution at each point with Gaussian with suitably large aperture)
+\section{Using Similarity for tracking}
+The concept of similarity surface can be made useful in tracking application.
+\\\\
+Let us consider a small region of interest about a present location y,
+we can compute the similarity score about this region,perform KDE
+on this small region,obtain a similarity surface and compute the mean shift vector.
+\\\\
+If object is not present in region,similarity surface will be flat and mean shift
+vector will be zero.
+\\\\
+If there is object present in some part of region,it will correspond
+to modes of similarity surface .The mean shift vector will give us
+direction to move along.
+\\\\
+Now instead of trying to estimate the mode,say we translate the region
+of interest along direction provided by the mean shift vector.
+This would typically lead to large portion of object being visible
+and would expose the region  of global similarity surface where
+a large maximum would lie.
+\\\\
+\ECFAugie\color{Orange}
+This is the basis of mean  shift tracking,keen on translating the region
+of interest ,till we reach local maximum of similarity surface.
+\ECFAugie\color{White}
+\\\\
+For tracking applications ,since fast computation is required,
+we can consider a rectangular window with bandwidth equal to that
+of the region of interest.The present location of point point
+is the center of the rectangular region.
+\subsection{Implementation}
+\begin{minted}[linenos=true,
+mathescape,
+numbersep=5pt,
+frame=single,
+framesep=2mm
+]{c++}
+//compute the likelihood
+Mat sim=h.likeyhoodImage(image);
+//perform iteratively till convergence
+    for(int i=0;i<criteria.maxCount;i++)
+    {
+    //extracting the region of interest
+    Mat roi=sim(region);
+    //compute the moments
+    cv::Moments m;
+    m=cv::moments(roi,false);
+    
+    //threshold m00 which is weighted mean,
+    //exit since no similar pixels present
+    if(fabs(m.m00)<region.width*region.height*0.05)
+        break;
+
+    //computing the mean values
+    int x=cvRound(m.m10/m.m00);
+    int y=cvRound(m.m01/m.m00);
+        
+    //computing the mean shift
+    int dx=region.width/2-x;
+    int dy=region.height/2-y;
+
+    //displacement from current position
+    int nx=p.x-dx;
+    int ny=p.y-dy;
+
+    //bounday of the image
+    if(nx-region.width/2<=0) nx=region.width/2;
+    if(nx+region.width/2>=image.cols) nx=image.cols-region.width/2-1;
+    if(ny-region.height/2<=0) ny=region.height/2;
+    if(ny+region.height/2>=image.rows) ny=image.rows-region.height/2-1;
+
+        //recalculating the mean shift
+    dx=-nx+p.x;
+    dy=-ny+p.y;
+
+    //checking magnitude of mean shift vector.
+
+    float mag=dx*dx+dy*dy;
+
+    //no change in mean,reached local maxima
+    if(mag<criteria.epsilon*criteria.epsilon)
+        break;
+
+   //updating the position
+    p.x=nx;
+    p.y=ny;
+    //updating the region of interest
+    region.x=p.x-region.width/2;
+    region.y=p.y-region.height/2;
+
+    }
+     
+\end{minted}
+A video of mean shift tracking is shown below.A naive object model based
+on color probability in HS color space using first frame of the video
+\vurl{https://googledrive.com/host/0B-pfqaQBbAAtNkg2bUJvWERmNFU/video00001.ogv}
+\\\\
+As will all tracking approaches ,the performance heavily depends on the object model.
+The better we are able to model the object and obtain a likelyhood/similarity which
+does not show high probability for background or other objects in the scene,the more 
+accurate will be the tracking
+\section{Code}
+For further image processing application a library consisting of high level
+interface to opencv will be used.The library is called OpenVisionLibrary.
+\url{https://github.com/pi19404/OpenVision}
+\\\\
+The project cmake file is included in the repository.
+the build will create the library and test files in the bin directory
+To run demo program for mean shift run the binary \texttt{meanShiftTest}
+\\\\
+The files for mean shift algorithm are meanshift.cpp and meanshift.hpp
+\url{https://github.com/pi19404/OpenVision/tree/master/ImgProc/}
+repository.
+\\\\
+To run the test program :
+\begin{minted}[linenos=true,
+mathescape,
+numbersep=5pt,
+frame=single,
+framesep=2mm
+]{c++}
+ meanShift - to run using camera input
+ meanShiftTest {video file name} - to run using a video file
+\end{minted}
+Select the region of interest and click the build model
+button to start tracking.
+\\\\
+For video file initially only the first frame is show ,select
+the ROI in the first frame and then click on build model button
+to start the tracking.
+\\\\
+The button is shown upon clicking on \texttt{Display properties}
+button on the window.
+
+
+
+% \subsection{Tracking using Similarity}
+% Let us assume that the scene is static and our estimate of object location is at some
+% point $(y)$ in the image.
+% \\\\
+% The tracking problem can be posed as similarity search problem.
+% The color probability distribution is calculated in Region of interest about location in current frame and search is performed for region with color probability
+% distribution in the next frame which is most similar to region in the current frame.
+% \\\\
+% If we estimate the object location correctly will get a similarity measure of 1.
+% \\\\
+% Let us assume that object was located at y,and now moved a small distance $h$
+% If we compute the histogram over a region centered at y ,we will get a similarity 
+% that is less 1.
+% \\\\
+% We need to move to a location such that maximum similarity is observed.
+% \\\\
+% Thus we need to find the location corresponding to modes of similarity function
+% \section{Similarity function}
+% Let us say we have two histograms,an object and the target histogram we can compute the similarity measure
+% between the object model and the target at location y.
+% \\\\
+% Bhattacharrya coefficients provides a similarity measure between histograms.
+% Thus bhattacharrya coefficient between object model q and color p of target at y is given by
+%  \begin{equation}
+%   \begin{array}{lcr}
+%   p(y) = (p_1(y),\ldots,p_m(y)) \\
+%   q    = (q_1,\ldots,q_m) \\
+%   \rho (p(y),q)= \sum_{u=1}^{M} \sqrt{p_u(y)q_u} \\
+%   \end{array}
+%   \end{equation}
+% Larger the value $\rho$ ,better is the match.
+% \\\\
+% For a perfect match similarity 1,and perfect mismatch 0.
+% \subsection{Modes of similarity function}
+% Using taylors series approximations
+%  \begin{equation}
+%   \begin{array}{lcr}
+%   \rho(p(z),q)= \sum_{u=1}^{M} \sqrt{p_u(z=y+h)q_u} \\
+%   = \sum_{u=1}^{M} \sqrt{p_u(y)q_u} + p_u'(y)h*0.5\sqrt{\frac{q_u}{p_u(y)}} \\
+%   =\sum_{u=1}^{M} 0.5 \sqrt{p_u(y)*q_u}+0.5*\sqrt{p_u(y)*q_u}+p_u'(y)h* \sqrt{\frac{q_u}{p_u(y)}} \\
+%   =\sum_{u=1}^{M} 0.5 \sqrt{p_u(y)*q_u} + 0.5* (p_u(y) + p_u'(y)h)  * \sqrt{\frac{q_u}{p_u(y)}} \\
+%   =\sum_{u=1}^{M} 0.5 \sqrt{p_u(y)*q_u} + 0.5* (p_u(z))  * \sqrt{\frac{q_u}{p_u(y)}} \\
+%   %\text{large $\rho$ denotes a good match}
+%   \end{array}
+%   \end{equation}
+%   Where $p_u(y)$ denotes the target distribution about region centered at y
+%   and $p_u(z)$ denotes the target distribution about region centered at z.
+%   \\\\
+% The first term in the summation is independent of z,the second term in summation is dependent on z.
+% To find the object location we can maximize the similarity $\rho(p(z),q)$ wrt z,by maximizing the second
+% term $\sum_{u=1}^M (p_u(z))  * \sqrt{\frac{q_u}{p_u(y)}} $
+% \\\\
+% Finding the modes of this function will give the modes of similarity function
+% \\\\
+% y is location of object in the previous frame,location of object to be estimated for maximum similarity
+% Thus we can find the value of z ,which maximizes the similarity function.
+% \\\\
+% $(p(z))  * \sqrt{\frac{q}{p(y)}}$ is a weighted PDF.
+% $p_u(z)$ can be estimated using kernel density estimate.\\\\
+% However  $p_u(z)$ is weighted by $\sqrt{\frac{q_u}{p_u(y)}}$
+% \\\\
+% $q_u$ is fully specified and is known,$p_u(y)$ is the target histgram
+% computed over a region of interest at current location,which again is known
+% \\\\
+% Thus ratio can be computed for region of interest about current location $y$
+% \\\\
+% \begin{itemize}
+% \item It takes a value of 1
+% if probability of pixel observed in object model is same as target model at location $y$.
+% \item It takes a value greater than 1 is probability is reduced in target distribution
+% \item It takes value lower than 1 if probability is higher is the target distribution
+% \item It takes a value of 0 for pixels not observed in the object model.
+% \end{itemize}
+% The term is like a weighted mean,higher weights are assigned to pixels/bins
+% which have a lower probability of being observed in target histogram ,indicating
+% a mismatch.
+% \\\\
+% value of object model which are dominant are weighted higher if the observation in target
+% model is lower.Lower weights are assignet to pixels/bins having higher probability than object model
+% indiating good match for these pixels/bins
+% \\\\
+% Kernel density estimation encorporates a dynamic weighting scheme based on the similarity
+% between object and target model.
+% \\\\
+% \subsection{Kernel Density Estimation for similarity function}
+% If we assumed that the obtained similarity function is a PDF,and we sampled from the PDF
+% higher density of points  would be obtained near the modes of this function
+% \\\\
+% Further each of these points can be associated with a weight 
+% \begin{eqnarray}
+%  p(z) = C_h \sum k( |\frac{z - x_i}{h}|^2 )
+%  p_u(z) = C_h \sum_{i} w_i 
+%  
+% \end{eqnarray}
+% 
+% \begin{eqnarray}
+%  
+% \end{eqnarray}
+% 
+% 
+% \section{Mean Shift Tracking}
+% Mean shift is a algorithm for find the modes of distribution from a set of data points
+% sampled from underlying unknown distribution.
+% \\\\
+% Large density of points are located at region where PDF has high value
+% and density of points is smaller at regions where PDF has low value.
+% \\\\
+% In mean shift algorithm we were trying to find the location at which PDF exhibits maximum values.
+% The parameters were the x and y co-ordinates
+% \\\\
+% Thus if we have 
+% 
+% 
+% Given a initial location of object,the appearence of object is modelled using
+% its color probability histogram in HS color space.
+% \\\\
+% given two histogram we can determine their similarity.A naive approach
+% to color based tracking would be search in all possible locations
+% about the current point where maximum object histogram similarity can
+% be observed.
+% \\\\
+% However potential locations to search are large even if we assume small
+% motion.
+% \\\\
+% The aim is to find the location where similarity function  is maximum.
+% The similarity function assigns a value between 0 and 1 ,by considing
+% a fixed region about the current point and computing the target model and
+% them comparing this with the object model.
+% \\\\
+% Some points will exhibit large similarity
+% If the similarity measure is smooth ,we can use the mean shift algorithm
+% to find the modes of the similarity function.
+% \\\\
+
+% \section{Mean Shift Tracking}
+% Mean shift tracking can be used for color based tracer.
+% 
+% 
+% 
+% 
+% 
+% \subsection{Constructing the object model}
+% Let us consider that object is centered at location $y$ and we have to construct the object model
+% in the form of histogram or probability distribution $p_u$,which provide the proability
+% that pixel intensity at location belongs to the color/intensity u.
+% \\\\
+% \[
+%   p_u = C \sum_{i=1}^n \delta(b(y_i)-u) \\\\
+% \]
+% where $b(y_i)$ denotes the bin corresponding to the pixel intensity at $y_i$
+% and $p_u(y)$ denotes the probability that pixel intensity at y belongs to color $u$.
+% \\\\
+% 
+% \subsection{Likelyhood image}
+% Now we have a object model,given an image we can compute the likeyhood image
+% Each pixel in likeyhood image represents the llikyhood that pixel belongs
+% to the object model/histogram.
+% \[
+%  L_u(y_i) = p_u*\delta(b(y_i)-u)
+% \]
+% If we compute the mean of likelyhood image,it would give us the best estimate
+% of location of object center $y$.
+% \begin{figure}[!htbp]
+% \begin{subfigure}[b]{0.3\textwidth}
+%                 \centering
+%                 \includegraphics[width=\textwidth]{image016.png}
+%                 \caption{original image}                
+%         \end{subfigure}%
+%   \begin{subfigure}[b]{0.3\textwidth}
+%                 \centering
+%                 \includegraphics[width=\textwidth]{image015.png}
+%                 \caption{likelyhood image}                
+%         \end{subfigure}%
+%   \begin{subfigure}[b]{0.3\textwidth}
+%                 \centering
+%                 \includegraphics[width=\textwidth]{image017.png}
+%                 \caption{Hue histogram}                
+%         \end{subfigure}%
+% 
+%         \caption{Object model}\label{fig:image1}
+% \end{figure}
+% 
+% 
+% 
+% \subsection{Hitsotgram Similarity}
+% Let us say we have two histograms,an object and the target histogram we can compute the similarity measure
+% between the object model and the target at location y.
+% \\\\
+% Bhattacharrya coefficients provides a similarity measure between histograms.
+% Thus bhattacharrya coefficient between object model q and color p of target at y is given by
+%  \begin{equation}
+%   \begin{array}{lcr}
+%   p(y) = (p_1(y),\ldots,p_m(y)) \\
+%   q    = (q_1,\ldots,q_m) \\
+%   \rho (p(y),q)= \sum_{u=1}^{M} \sqrt{p_u(y)q_u} \\
+%   \end{array}
+%   \end{equation}
+% Larger the value $\rho$ ,better is the match.
+% \\\\
+% For a perfect match similarity 1,and perfect mismatch 0.
+% \\\\
+% \begin{figure}[!htbp]
+% \begin{subfigure}[b]{0.5\textwidth}
+%                 \centering
+%                 \includegraphics[width=\textwidth]{image018.png}
+%                 \caption{displaced image similarity 1}                
+%         \end{subfigure}%
+%   \begin{subfigure}[b]{0.5\textwidth}
+%                 \centering
+%                 \includegraphics[width=\textwidth]{image019.png}
+%                 \caption{displaced image similarity 2}                
+%         \end{subfigure}%
+%         \caption{Object model}\label{fig:image1}
+% \end{figure}
+% The first image in figure \ref{fig:image1} is used to build the histogram and shows a high similarity of
+% almost one .The second image which is displaced by some ammount shows a lower similarity of 0.83.
+% \\\\
+% Using taylors series approximations
+%  \begin{equation}
+%   \begin{array}{lcr}
+%   \rho(p(z),q)= \sum_{u=1}^{M} \sqrt{p_u(z=y+h)q_u} \\
+%   = \sum_{u=1}^{M} \sqrt{p_u(y)q_u} + p_u'(y)h*0.5\sqrt{\frac{q_u}{p_u(y)}} \\
+%   =\sum_{u=1}^{M} 0.5 \sqrt{p_u(y)*q_u}+0.5*\sqrt{p_u(y)*q_u}+p_u'(y)h* \sqrt{\frac{q_u}{p_u(y)}} \\
+%   =\sum_{u=1}^{M} 0.5 \sqrt{p_u(y)*q_u} + 0.5* (p_u(y) + p_u'(y)h)  * \sqrt{\frac{q_u}{p_u(y)}} \\
+%   =\sum_{u=1}^{M} 0.5 \sqrt{p_u(y)*q_u} + 0.5* (p_u(z))  * \sqrt{\frac{q_u}{p_u(y)}} \\
+%   %\text{large $\rho$ denotes a good match}
+%   \end{array}
+%   \end{equation}
+%   Where $p_u(y)$ denotes the target distribution about region centered at y
+%   and $p_u(z)$ denotes the target distribution about region centered at z.
+%   \\\\
+% The first term in the summation is independent of z,the second term in summation is dependent on z.
+% To find the object location we can maximize the similarity $\rho(p(z),q)$ wrt z,by maximizing the second
+% term $\sum_{u=1}^M (p_u(z))  * \sqrt{\frac{q_u}{p_u(y)}} $
+% \\\\
+% The terms is the ratio of histograms/likelyhoods.
+% \begin{itemize}
+%  \item It takes a value of 1
+% if probability of pixel observed in object model is same as target model at location $y$.
+% \item It takes a value greater than 1 is probability is reduced in target distribution
+% \item It takes value lower than 1 if probability is higher is the target distribution
+% \item It takes a value of 0 for pixels not observed in the object model.
+% \end{itemize}
+% The term is like a weighted mean,higher weights are assigned to pixels/bins
+% which have a lower probability of being observed in target histogram ,indicating
+% a mismatch.
+% \\\\
+% Lower weights are assignet to pixels/bins having higher probability than object model
+% indiating good match for these pixels/bins
+% \\\\
+% Pixels not in object model are not considered in computing the mean.
+% \\\\
+% 
+% 
+% 
+% 
+% Let us assume at the initial position $q_u=p_u(y)$ for all u
+% \\\\
+% Thus we are left to maximize $\sum_{u=1}^M (p_u(z))$
+% \\\\
+% Value of z which gives the highest value of mean of target proability distribution is 
+% best estimate of object location.
+% \\\\
+% If we set $z=m(z)$ we have estimated the object location.
+% 
+% 
+% 
+% \section{Tracking}
+% Object is tracked in given frame by matching color probability of target with that of object model.
+% \\\\
+% This probability map/color probabilit histogram serves as primary input to the mean shift tracked along with the location
+% estimate of object.Typically the initial location estimate is provided by the user by selecting the ROI.
+% \\\\
+% Mean shift tracking assumes that object does not move drastically.Given frames $\mathcal{I}$ and $\mathcal{J}$
+% and ROI $\mathcal{R}$ defined in the frame $\mathcal{I}$ it is assumed that some part of the object is visible
+% in the ROI defined by $\mathcal{R}$ in the frame $\mathcal{J}$.
+% \\\\
+% Thus color probability distribution about region $\mathcal{R}$ in frame $\mathcal{I}$ will bear some similarity
+% with the color probability distribution about region $\mathcal{R}$ in frame $\mathcal{J}$.
+% \\\\
+% To determine the location of the object the similarity measure needs to be translated into spatial information.
+% The algorithm should estimate the location where maximum similarity is observed .
+% \\\\
+% The best candidate location is found by maximizing a similarity function.
+% \\\\
+% In the figure \ref{fig:image1} ,is we are able to move to a position that has highest similarity locally
+% then we can assume that the object has been tracked successfully.
+% \\\\
+% 
+% 
+% 
+% If Similarity function is convex,smooth and differentiable,we can find a way to translate
+% the similarity information to spatial information.
+% \\\\
+% 
+% 
+% \section{Mean Shift Algorithm}
+% Mean shift algorithm forms the basis for the tracking algorithm.
+% \\\\
+% Brute force approach can be to perform the similarity comparision over some neighborhood
+% of current location and choose new estimate as location which gives the maximum similarity
+% \\\\
+% However if we assume that new location z is located near to y and color probability
+% does not change drastically
+% \\\\
+% Using binomial theorem
+% 
+% 
+% Let us assume that object has moved and we estimate new location $\bar{y}$
+% \\\\
+% The sample mean $m$ at $\bar{y}$ with kernel K or the weighted mean is given by
+%  \begin{equation}
+%   \begin{array}{lcr}
+%     m(x) = \frac{\sum_{i=1}^\mathcal{N} K(\bar{y}-x_i)y_i}{\sum_{i=1}^{\mathcal{N}} K(\bar{y}-y_i)}
+%   \end{array}  
+%   \end{equation}      
+% \\\\
+% 
+% 
+% 
+% If we did not known y ,but have a set of point $y_i$,using the above formulation
+% we can estimate the value $y$ that gives the maximum probability for specific color $u$.
+% \\\\
+% 
+% 
+% 
+% Consider a Set $\mathcal{S}$ of $\mathcal{N}$ data points $x_i$ in 2-D Euclidean space $\mathcal{X}$.
+% \\\\
+% Let $K(x)$ denote a kernel function that indicates weighted contribution of point $x_i$ to estimation of the mean.
+% The difference $m(x) - x$ is called the mean shift.
+% \\\\
+% The aim of the mean shift algorithm is to iteratively move the data point to its mean.In each iteration
+% $x \leftarrow m(x)$.The algorithm stops when $m(x)=x$.
+% \\\\
+% The sequence $x,m(x),m(m(x)) \ldots$ indicates  trajectory iteration takes to reach x.
+% \\\\
+% \subsection{Kernel function}
+% Typically Kernel is is a function of $||x||^2$. $K(x) = k(||x||^2)$
+% and k is called the profile of the kernel.
+% Some commom properties of profile are
+% \begin{itemize}
+%  \item k is non negative
+%  \item k is non increasing 
+%  \item k is piecewise continuous and has finite area.
+% \end{itemize}
+% The aim of the kernel is to given importance to data points near the point at which mean is estimated
+% than other points.
+% \\\\
+% Commonly used kernels are flat and gaussian kernels.In the present implementation we will use a flat kernel/
+% \subsection{Kernel Density Estimation}
+% Kernel density estimation is a popular method of estimating the probability distribution.
+% \\\\
+% For a set of $\mathcal{N}$ data points $x_i$ in 2-D space the kernel density estimate with kernel K
+% and radius h is given by
+%  \begin{equation}
+%   \begin{array}{lcr}
+%   \bar{f}_K(x) = \frac{1}{nh^2}\sum_{i=1}^{\mathcal{N}} K(\frac{x-x_i}{h})
+%   \bar{f}_K(x) = \frac{1}{nh^2}\sum_{i=1}^{\mathcal{N}} k(||\frac{x-x_i}{h}||^2)
+%   \end{array}
+%   \end{equation}
+% The quality of estimation is measured as mean square error between the actual density and the estimat.
+% \\\\
+% Define a kernel $G(x) = g(||x||^2)$ such that
+%  \begin{equation}
+%   \begin{array}{lcr}
+%   g(x) = - k'(x) = - \frac{\partial dk(x)}{\partial x}
+%   \end{array}
+%   \end{equation}
+% \\\\
+% since kernel function is used to model probability density function.$f_K(x)$ represents the statistical mean
+% of the probability distribution modelled by the kernel function.
+% \\\\
+% \subsection{Mean shift}
+% Mean shift with kernel G will move along the direction of gradient of density estimate $\bar{f}$ with kernel K.
+% This is shown below.
+% \\\\
+% Define a density estimate with K ,perform mean with G.Mean shift will perform gradient ascent on density estimate.
+% \\\\
+%  \begin{equation}
+%   \begin{array}{lcr}
+%   \text{Consider density estimate with kernel G}\\\\
+%   \bar{f}_{G}(x) = \frac{C}{nh^2}\sum_{i=1}^{\mathcal{N}} G(\frac{x-x_i}{h})\\
+%   \bar{f}_{G}(x) = \frac{C}{nh^2}\sum_{i=1}^{\mathcal{N}} g(||\frac{x-x_i}{h}||^2)
+%   \\
+%   \text{where C is a normalization constant}
+%   \\\\
+%   \text{Mean shift with kernel G is}\\
+%   M_{G}(x) = \frac{\sum_{i=1}^\mathcal{N} g(||\frac{x-x_i}{h}||^2)x_i}{\sum_{i=1}^{\mathcal{N}} g(||\frac{x-x_i}{h}||^2)}-x\\
+%   \text{Estimate of density gradient is gradient of density estimate}
+%   \bar{\nabla} f_K(x) 	= \nabla \bar{f}_K(x)\\
+%   \bar{\nabla} f_K(x)	=\frac{2}{nh^4}\sum_{i=1}^{\mathcal{N}} (x-x_i)k'(||\frac{x-x_i}{h}||^2)\\
+%   \bar{\nabla} f_K(x)	=\frac{2}{nh^4}\sum_{i=1}^{\mathcal{N}} (x-x_i)g(||\frac{x-x_i}{h}||^2)\\
+%   \bar{\nabla} f_K(x)	=\frac{2}{nh^4}\sum_{i=1}^{\mathcal{N}} (x-x_i)g(||\frac{x-x_i}{h}||^2)\\
+%   \bar{\nabla} f_K(x)	=\frac{2}{nh^4}\sum_{i=1}^{\mathcal{N}} (x-x_i)g(||\frac{x-x_i}{h}||^2)\\
+%   \bar{\nabla} f_K(x)	=\frac{2}{nh^4}\sum_{i=1}^{\mathcal{N}} g(||\frac{x-x_i}{h}||^2) * M_{G}(x)\\
+%   \bar{\nabla} f_K(x)	=\frac{2}{Ch^2}\bar{f}_{G}(x) * M_{G}(x)\\
+%   M_{G}(x) = 0.5*Ch^2 \frac{\bar{\nabla} f_K(x)}{\bar{f}_{G}(x)}\\  
+%   \end{array}
+%   \end{equation}
+% This proves $M_{G}(x)$ provides an estimate of normalized gradient of $f_{K}$.
+% Thus as we apply mean shift tracking with kernel G we will obtain estimate of the normalized gradient
+% of $f_{k}$.If location has been reached such that $m_g(x)=x$ then mean shift will be zero indicating
+% the normalized gradient values is zero  and thus point at which the density is maximum has been reached.
+% \\\\
+% 
+% \subsection{Similarity measure}
+% % The mean shift will be zero if the similarity between the object model and current frame at specified
+% % location is maximum.Thus indicating location of point at which maximum model probability is observed
+% % as been reached.
+% % \\\\
+% In the present implementation location where the maximim similarity wrt object is observed is determined.
+% \begin{itemize}
+%  \item Let $x_i,i=1,2,\dots,N $ denote pixels locations of model centered at 0.
+%  \item Let the color distribution be represented by m color histogram bin
+%  \item Let $b(x_i)$ denote the color of the bin at location $x_i$
+%  \item Assume the model is normalized and kernel radius is 1.
+% \end{itemize}
+% The probability q of color u in object model can b represented as 
+%  \begin{equation}
+%   \begin{array}{lcr}
+%     q_u = C \sum_{i=1}{N}k(||x_i||^2)\delta(b(x_i) - u_)\\
+%     C=[\sum_{i=1}{N}k(||x_i||^2)]^-2\\
+%     \text{Kernel weights contribution of point by distance to the centroid}\\
+%     \text{Let $y_i$ denote target location of pixels centered at y}\\
+%     \text{The probabililty p of color u in target candidate is given by}\\
+%     p_u = C_h \sum_{i=1}{N_h}k(||\frac{y-y_i}{h}||^2)\delta(b(y_i) - u_)\\
+%     C_h=[\sum_{i=1}{N}k(||\frac{y-y_i}{h}||^2]^-2\\    
+%   \end{array}
+%   \end{equation}
+% % Thus we have the object and the target histogram we can compute the similarity measure
+% % between the object model and the target at location y.
+% % \\\\
+% % Bhattacharrya coefficients provides a similarity measure between histograms.
+% % Thus bhattacharrya coefficient between object model q and color p of target at y is given by
+% %  \begin{equation}
+% %   \begin{array}{lcr}
+% %   \rho(p(y),q)= \sum_{u=1}^{M} \sqrt(p_u(y)q_u)
+% %   \text{large $\rho$ denotes a good match}
+% %   \end{array}
+% %   \end{equation}
+% Let y denote the current target location and Let z denote estimated new target location near y .
+% \\\\
+% And since color probability will not change drastically between adjacent frames the similarity coefficient
+% can be approximated using first order taylor's polynomial.
+% \\\\
+%  \begin{equation}
+%   \begin{array}{lcr}
+%   \rho(p(z),q)= 0.5*\rho(p(y),q) + 0.5 \sum_{u=1}^{M}p_u(z)\sqrt(\frac{q_u}{p_u(y)})
+%     \text{Probaiblity p of color u in the target candidate centered as z}
+%     p_u(z) = C_h \sum_{i=1}^{N_h}k(||\frac{z-y_i}{h}||^2)\delta(b(y_i) - u_)\\\\
+%     rho(p(z),q)= 0.5*\rho(p(y),q) + 0.5 \sum_{u=1}^{M}C_h \sum_{i=1}^{N_h}k(||\frac{z-y_i}{h}||^2)\delta(b(y_i) - u_) \sqrt(\frac{q_u}{p_u(y)})\\\\
+%     rho(p(z),q)= 0.5*\rho(p(y),q) + \frac{C_h}{2} \sum_{i=1}^{N_h} \sum_{u=1}^{M} (\delta(b(y_i) - u_) \sqrt(\frac{q_u}{p_u(y)}))	k(||\frac{z-y_i}{h}||^2)\\\\
+%     rho(p(z),q)= 0.5*\rho(p(y),q) + \frac{C_h}{2} \sum_{i=1}^{N_h} w_i	k(||\frac{z-y_i}{h}||^2)\\\\
+%     \text{First term is independent of z ,second term is dependent of z}\\
+%     \text{To maximize similarity maximize the second term wrt z}\\        
+%     \frac{C_h}{h} \sum_{i=1}^{N_h} w_i	(z-y_i) k'(||\frac{z-y_i}{h}||^2) =0 \\\\
+%     \sum_{i=1}^{N_h} w_i y_i k'(||\frac{z-y_i}{h}||^2) = \sum_{i=1}^{N_h} w_i z (||\frac{z-y_i}{h}||^2)\\\\
+%     z = \sum_{i=1}^{N_h} w_i y_i g(||\frac{z-y_i}{h}||^2)  / \sum_{i=1}^{N_h} w_i g(||\frac{z-y_i}{h}||^2)\\\\
+%     \text{Since the color probability is assumed to not change drasitically}\\
+%     z = \sum_{i=1}^{N_h} w_i y_i g(||\frac{y-y_i}{h}||^2)  / \sum_{i=1}^{N_h} w_i g(||\frac{y-y_i}{h}||^2)\\\\    
+%   \end{array}
+%   \end{equation}
+%   Thus estimate of location which provides the maximum similarity is obtained as weighted summation
+%   of kernel function $G_(x)$.   
+% \section{Mean Shift Tracking Algorithm}
+% given probability q of set of colors ${q_u}$ of model and location y in the previous frame
+% \begin{itemize}
+%  \item Initialize the location of the target in the current frame as y
+%  \item compute the probability p of set of colors ${u}$ in the current frame $p_u(y)$ and similarity coefficient $\rho(p(y),q)$
+%  \item compute the weights $w_i$ over the region in the current frame.
+%  \item Compute the new location of z 
+%  \item compute the probability $p_u(z)$ and similarity measure $\rho(p(y),q)$
+%  \item if $\rho(p(z),q)$ < $\rho(p(y),q)$ do $z\leftarrow0.5*(z+y)$.
+%  \item if $|z-y|$ is small stop else $y\leftarrow z$
+% \end{itemize}
+% \section{Implementation Details}
+% In the present implementation kernel function used is a flat kernel.
+% \\
+% The object model used is the color probability histogram in the HS channels of HSV color space.
+% \\
+% Initial location and ROI is provided as input to the algorithm.
+% \\
+% The color probability distribution can be calculated from the provided ROI.
+% \\
+% Thus at initialization a probability q of set of color ${q_u}$ of model and location is available y.
+% \\
+% With the same location y and the given ROI compute the color probability distribution of next frame.
+% \\
+% since we have color probability distribution is the current and the next frame the similarity coefficient can be evaluated.
+% \\
+% Considering a flat kernel.
+% \\
+%  \begin{equation}
+%   \begin{array}{lcr}
+%     g(x)=-k'(x) \\
+%     g(x)=-\frac{\partial (x-x_i)/h}{\partial x} \\
+%     g(x)= \frac{x_i}{h};
+%     g(x)=x_i        
+%     z = \sum_{i=1}^{N_h} w_i)y_i*y_i||^2)  / \sum_{i=1}^{N_h} w_i*y_i\\\\    
+%     w_i =\sum_{u=1}^{M} (\delta(b(y_i) - u_) \sqrt(\frac{q_u}{p_u(y)}))\\\
+%   \end{array}
+%   \end{equation}
+
+
+\end{document}
