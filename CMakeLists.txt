@@ -27,6 +27,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 include_directories("${PROJECT_SOURCE_DIR}/ImgProc")
 include_directories("${PROJECT_SOURCE_DIR}/Common")
 add_subdirectory(ImgProc)
+add_subdirectory(ImgFeatures)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_VERBOSE_MAKEFILE ON)
