@@ -1,2 +1,2 @@
-add_library ( ImgProc Histogram.cpp meanshift.cpp)
-target_link_libraries(OpenVisionLibrary ${OpenCV_LIBS} )
+add_library ( ImgProc SHARED Histogram.cpp meanshift.cpp )
+target_link_libraries(ImgProc ${OpenCV_LIBS} ${FFTW_LIBS})

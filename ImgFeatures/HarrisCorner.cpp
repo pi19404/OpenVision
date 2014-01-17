@@ -1,6 +1,6 @@
 #include "HarrisCorner.hpp"
 
-using namespace FeatureDetection;
+using namespace ocv::FeatureDetection;
 
 
 //constructor for good feature to track class

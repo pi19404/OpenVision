@@ -1,7 +1,7 @@
 #include "SubPixelCorner.hpp"
 
 
-using namespace FeatureDetection;
+using namespace ocv::FeatureDetection;
 
 
 SubPixelCorner::SubPixelCorner()
@@ -94,7 +94,7 @@ void SubPixelCorner::RefineCorner(cv::Mat image,std::vector <cv::Point2f> &corne
         //initial estimate
         cv::Point2f estimate_corner=corners[k];
 
-        cerr << "SSS" << corners[k].x <<":" << corners[k].y << endl;
+        //cerr << "SSS" << corners[k].x <<":" << corners[k].y << endl;
 
         if(estimate_corner.x<0 || estimate_corner.y<0 || estimate_corner.y >image.rows || estimate_corner.y > image.cols)
             continue;
@@ -202,7 +202,7 @@ void SubPixelCorner::RefineCorner(cv::Mat image,std::vector <cv::Point2f> &corne
         }
         corners[k].x=estimate_corner.x;
         corners[k].y=estimate_corner.y;
-        cerr << "EEE" << corners[k].x <<":" << corners[k].y << endl;
+        //cerr << "EEE" << corners[k].x <<":" << corners[k].y << endl;
 
     }
 

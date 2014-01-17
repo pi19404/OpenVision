@@ -16,33 +16,16 @@
  */
 #ifndef FEATURE_DETECTOR_HPP
 #define FEATURE_DETECTOR_HPP
-#include <iostream>
+#include "Common/OpenCVCommon.hpp"
+#include "ImgFeatures/SubPixelCorner.hpp"
 
-#include <iostream>
-#include <iostream>
-
-#include <iostream>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <sstream>
-#include <opencv2/core/core.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/imgproc/imgproc.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/highgui/highgui.hpp>  // Video write
-#include "SubPixelCorner.hpp"
-#include <iostream>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <sstream>
-#include <opencv2/core/core.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/imgproc/imgproc.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/highgui/highgui.hpp>  // Video write
 
 using namespace cv;
 using namespace std;
 
-namespace  FeatureDetection
+namespace ocv
 {
-
+namespace FeatureDetection {
 template<class T>
 struct accessor {
 
@@ -110,6 +93,8 @@ public:
     virtual vector<cv::Point2f> run(Mat src)=0;
      FeatureDetector();
      SubPixelCorner _subPixel;              //object supporting methods for subpixel estimation
+     Mat mask;
+     void setMask1(Mat _mask);
 
     //method to set the maxCorners value
     virtual void setMaxCorners(uint value);
@@ -129,6 +114,7 @@ public:
         return 0;
       }
 };
+}
 }
 
 

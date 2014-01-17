@@ -1,5 +1,5 @@
 #include "Fast.hpp"
-
+using namespace ocv;
 FeatureDetection::Fast::Fast()
 {
 

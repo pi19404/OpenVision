@@ -1,22 +1,11 @@
 #ifndef FAST_H
 #define FAST_H
-#include <iostream>
-
-#include <iostream>
-#include <iostream>
-
-#include <iostream>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <sstream>
-#include <opencv2/core/core.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/imgproc/imgproc.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/highgui/highgui.hpp>  // Video write
 #include "FeatureDetector.hpp"
 using namespace cv;
 using namespace std;
-namespace  FeatureDetection
+namespace  ocv
 {
+namespace FeatureDetection {
 class Fast: public FeatureDetector
 {
 public:
@@ -35,5 +24,6 @@ public:
     bool init;
     int K;
 };
+}
 }
 #endif // FAST_H

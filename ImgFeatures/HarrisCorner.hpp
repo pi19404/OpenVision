@@ -2,8 +2,9 @@
 #define HARRIS_CORNER_HPP
 #include "FeatureDetector.hpp"
 
-namespace  FeatureDetection
+namespace  ocv
 {
+namespace FeatureDetection {
 class HarrisCorner: public FeatureDetector
 {
     int block_size;           // local block size used for eigen value computation
@@ -26,5 +27,6 @@ class HarrisCorner: public FeatureDetector
 
 
 };
+}
 }
 #endif // HARRIS_CORNER_HPP

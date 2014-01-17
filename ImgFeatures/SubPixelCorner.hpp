@@ -1,30 +1,14 @@
 #ifndef SUBPIXELCORNER_HPP
 #define SUBPIXELCORNER_HPP
-#include <iostream>
 
-#include <iostream>
-#include <iostream>
 
-#include <iostream>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <sstream>
-#include <opencv2/core/core.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/imgproc/imgproc.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/highgui/highgui.hpp>  // Video write
-#include <iostream>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <sstream>
-#include <opencv2/core/core.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/imgproc/imgproc.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/highgui/highgui.hpp>  // Video write
+#include "Common/OpenCVCommon.hpp"
 
 using namespace cv;
 using namespace std;
-namespace FeatureDetection
+namespace ocv
 {
-
+namespace FeatureDetection {
 class SubPixelCorner
 {
 private:
@@ -51,7 +35,7 @@ public:
 
 };
 
-
+}
 
 }
 

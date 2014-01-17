@@ -1,12 +1,12 @@
 #include "GoodFeatureToTrack.hpp"
 
-using namespace FeatureDetection;
+using namespace ocv::FeatureDetection;
 
 GoodFeatureToTrack::GoodFeatureToTrack ()
 {
     maxCorners=100;
     aperture_size=3;
-    qualityLevel=0.01;
+    qualityLevel=0.1;
     minDistance=10;
     block_size=3;
     borderType=cv::BORDER_DEFAULT;
@@ -70,6 +70,9 @@ vector<cv::Point2f> GoodFeatureToTrack::run(Mat src)
        Sobel( src, Dx,CV_32F, 1, 0, aperture_size, scale, 0, borderType );
        Sobel( src, Dy,CV_32F, 0, 1, aperture_size, scale, 0, borderType );
 
+       Dy.setTo(cv::Scalar::all(0),mask);
+       Dx.setTo(cv::Scalar::all(0),mask);
+
        Size size = src.size();
 
        //matrix containing matrix components at each point
@@ -105,12 +108,15 @@ vector<cv::Point2f> GoodFeatureToTrack::run(Mat src)
        //we can use other types of filters for weighted averages
        boxFilter(matrix, matrix, matrix.depth(), Size(block_size, block_size),Point(-1,-1), false, borderType );
 
+       //imshow("DD",matrix);
+
        //computing the eigen values
 
        for(int  i = 0; i < size.height; i++ )
        {
            float* vals = (float*)(matrix.data + i*matrix.step);
            float* o1 = (float*)(dst.data + dst.step*i);
+           uchar *mp=mask.ptr<uchar>(i);
            for(int  j = 0; j < size.width; j++ )
            {
                float a = vals[j*3];
@@ -122,6 +128,9 @@ vector<cv::Point2f> GoodFeatureToTrack::run(Mat src)
                double l1 = u - v;      //minimum eigen values
                double l2 = u + v;    //maximum eigen values
 
+               if(mp[j]==1)
+               o1[j]=0;
+               else
                o1[j] = l1;                 //using the maximum eigen value to determine strong edge
 
            }
@@ -159,6 +168,8 @@ void GoodFeatureToTrack::filter_corners(Mat dst)
     minMaxLoc(dst, 0, &maxVal, 0, 0,Mat() );
 
 
+
+
     //accessing the cell blocks of size min distance
 
     for(int x=0;x<xx;x++)
@@ -182,8 +193,10 @@ void GoodFeatureToTrack::filter_corners(Mat dst)
             Point minLoc;
             double m1=0;
             minMaxLoc( r, 0, &m1,0,&minLoc, Mat());
+
             if(m1>=maxVal*qualityLevel)
             {
+
             //threshold(r,r,m1, 0, THRESH_TOZERO );
             minLoc.x=minLoc.x+x*cell_size;
             minLoc.y=minLoc.y+y*cell_size;

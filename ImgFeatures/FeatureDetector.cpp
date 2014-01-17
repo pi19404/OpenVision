@@ -1,6 +1,6 @@
 #include "FeatureDetector.hpp"
 
-using namespace FeatureDetection;
+using namespace ocv;
 
 FeatureDetection::FeatureDetector::FeatureDetector()
 {
@@ -18,6 +18,12 @@ void FeatureDetection::FeatureDetector::setminDistance(uint value)
 {
     minDistance=value;
 }
+
+void FeatureDetection::FeatureDetector::setMask1(Mat _mask)
+{
+    _mask.copyTo(mask);
+}
+
 
 void FeatureDetection::FeatureDetector::filter_corners(Mat dst)
 {

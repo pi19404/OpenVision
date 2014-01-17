@@ -19,8 +19,9 @@
 
 #include "FeatureDetector.hpp"
 
-namespace  FeatureDetection
+namespace  ocv
 {
+namespace FeatureDetection {
 class GoodFeatureToTrack : public FeatureDetector
 {
 
@@ -64,5 +65,6 @@ void filter_corners(Mat dst);
 
 
 };
+}
 }
 #endif // GOOD_FEATURES_TO_TRACK_HPP
