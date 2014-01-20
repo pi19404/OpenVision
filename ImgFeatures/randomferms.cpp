@@ -29,6 +29,9 @@ for(int i=0;i<_numFerns;i++)
 }
 }
 
+//give a feature vector of size M(number of ferms)
+//we compute the output of ensemble classifier as
+//average of individual classifiers
 float RandomFerns::calcConfidence(vector<int> features)
 {
 
@@ -41,19 +44,25 @@ float RandomFerns::calcConfidence(vector<int> features)
 }
 
 
-
+//while updating the posterior probabilities after updating the class histograms
 void RandomFerns::updatePosterior(vector<int> features,bool class1,int ammount)
 {
     for(int i=0;i<features.size();i++)
     {
         int arrayIndex=(i*_numIndices)+features[i];
         class1?positive[arrayIndex]+=ammount:negatives[arrayIndex]+=ammount;
-        posteriors[arrayIndex]=(((float)positive[arrayIndex])+0.1)/((float)positive[arrayIndex]+(float)negatives[arrayIndex]+0.1);
+        posteriors[arrayIndex]=(((float)positive[arrayIndex]))/((float)positive[arrayIndex]+(float)negatives[arrayIndex]);
     }
  //   writeToFile("/home/pi19404/config_oc.txt");
 }
 
 
+//compute the location points for the binary tests
+//for locations of ferns we select the points such that they lie at random locations
+//in a rectangular ROI of size 1,the points are selected such that
+//adjacent points will most likely not lie in the same quadrant
+//random location of points as well as random selection of quadrant
+// are used
 //compute the location points for the binary tests
 void RandomFerns::init()
 {
@@ -107,7 +116,7 @@ void RandomFerns::init()
 
 
 
-vector<int> RandomFerns::computeFeatures(const Rect r,const Mat image,Mat avg=Mat())
+vector<int> RandomFerns::computeFeatures(const Rect r,const Mat image)
 {
 
 
@@ -116,9 +125,7 @@ vector<int> RandomFerns::computeFeatures(const Rect r,const Mat image,Mat avg=Ma
 
     Mat roi=image(r);
     //if(avg.empty()==false)
-    Mat roi2;
-    if(!avg.empty())
-        roi2=avg(r);
+
     for(int i=0;i<points.size();i++)
     {
         int index=0;
@@ -133,16 +140,7 @@ vector<int> RandomFerns::computeFeatures(const Rect r,const Mat image,Mat avg=Ma
             uchar val1=roi.at<uchar>(p.x,p.y);
             uchar val2=roi.at<uchar>(p1.x,p1.y);
 
-            uchar val3;
-            if(!avg.empty())
-                val3=roi2.at<uchar>(p.x,p.y);
-            else
-                val3=val2;
-            /*if((int)val1 >(int)val2 && avg.empty())
-            {
-                index|=1;
-            }
-            else*/ if((int)val1 >(int)val3)
+            if((int)val1 >(int)val2)
             {
                 index|=1;
             }
@@ -156,7 +154,7 @@ vector<int> RandomFerns::computeFeatures(const Rect r,const Mat image,Mat avg=Ma
 
 
 
-vector<Rect> RandomFerns::compute(vector<Rect> r,const Mat image,const Mat avg=Mat())
+vector<Rect> RandomFerns::compute(vector<Rect> r,const Mat image)
 {
 
     //cerr << "---" << r.size() << endl;
@@ -174,7 +172,7 @@ vector<Rect> RandomFerns::compute(vector<Rect> r,const Mat image,const Mat avg=M
 
         //Mat roi=image(r[i]);
         //computing fern features,a binary string  is retuned for each fern
-        features[i]=computeFeatures(r[i],image,avg);
+        features[i]=computeFeatures(r[i],image);
         float conf=calcConfidence(features[i]);
 
         //storing the features
@@ -202,10 +200,10 @@ vector<Rect> RandomFerns::compute(vector<Rect> r,const Mat image,const Mat avg=M
 }
 
 
-void RandomFerns::learn(Rect r,Mat image,bool class1,bool force=0,Mat avg=Mat())
+void RandomFerns::learn(Rect r,Mat image,bool class1,bool force=0)
 {
 
-    vector<int> features=computeFeatures(r,image,avg);
+    vector<int> features=computeFeatures(r,image);
 
     /*for(int i=0;i<features.size();i++)
     {
@@ -227,11 +225,11 @@ void RandomFerns::learn(Rect r,Mat image,bool class1,bool force=0,Mat avg=Mat())
 }
 
 
-bool RandomFerns::classify(Rect r,Mat image,Mat avg=Mat())
+bool RandomFerns::classify(Rect r,Mat image)
 {
 
 
-    vector<int> features=computeFeatures(r,image,avg);
+    vector<int> features=computeFeatures(r,image);
     if(calcConfidence(features)<0.5)
         return false;
     else
