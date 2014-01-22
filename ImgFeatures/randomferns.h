@@ -57,7 +57,7 @@ vector<Rect> compute(vector<Rect> r,const Mat image);
 
 
  //learn
- void learn(Rect r,Mat image,bool class1,bool force=0);
+ void learn(Rect r,Mat image,bool class1,bool force);
 
 
  //function to classify the window

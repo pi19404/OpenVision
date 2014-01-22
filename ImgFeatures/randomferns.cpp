@@ -1,4 +1,4 @@
-#include "randomferms.h"
+#include "randomferns.h"
 
 RandomFerns::RandomFerns()
 {

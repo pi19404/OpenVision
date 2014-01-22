@@ -5,14 +5,81 @@
 class LBPFeatures
 {
 public:
-    LBPFeatures(){};
+    LBPFeatures()
+    {
+     initUniform();
+    }
     Mat image;
     vector<uchar> features;
     Mat mask;
     IntegralImage ix;
+    vector<int> lookup;
+
+
+    //naive count number of set bits
+    bool countSetBits1(int code)
+    {
+      int count=0;
+      while(code!=0)
+      {
+      if(code&&0x01)
+      count++;
+      code=code>>1;
+      }
+      return count;
+    }
+
+    // Brian Kernighan's method to count set bits
+    bool countSetBits(int code)
+    {
+      int count=0;
+      int v=code;
+      for(count=0;v;count++)
+      {
+      v&=v-1; //clears the LSB
+      }
+      return count;
+    }
+
+
+    //checking if code is uniform or not
+    bool checkUniform(int code)
+    {
+      int b = code >> 1;
+      int c = code ^ b;
+      int count=countSetBits(c);
+      if ((count%2)==0 || count==0 || count==1)
+          return 1;
+      else
+          return 0;
+    }
+
+    //3x3 neighborhood will have 8 neighborhood pixels
+    //all non uniform codes are assigned to 59
+    void initUniform()
+    {
+        lookup.resize(59);
+        int index=0;
+        for(int i=0;i<255;i++)
+        {
+            bool status=checkUniform(i);
+            if(status==true)
+            {
+                lookup[i]=index;
+                index++;
+            }
+            else
+            {
+                lookup[i]=59;
+            }
+        }
+    }
 
 
     //function to compute LBP image
+    //TBD : check if grayscale encoding can be done
+    //can be used to encode orientation changes of gradient
+    //lbp encodes information about different types of gradients
     void compute(Mat image,Mat &dst)
     {
         uchar *ptr=image.data;
@@ -27,7 +94,10 @@ public:
             {
                 int center=(int)ptr[j+i*width];
                 unsigned char code=0;
-                code|=((int)ptr[(j-1)+(i-1)*width] >=center)<<7 ;
+
+                //for(int k=7;k>=0;k++)
+                {
+                code|=((int)ptr[(j-1)+(i-1)*width] >=center)<<7;
                 code|=((int)ptr[j+(i-1)*width] >=center)<<6 ;
                 code|=((int)ptr[(j+1)+(i-1)*width] >=center)<<5 ;
                 code|=((int)ptr[(j+1)+(i)*width] >=center)<<4 ;
@@ -35,9 +105,35 @@ public:
                 code|=((int)ptr[j+(i+1)*width] >=center)<<2 ;
                 code|=((int)ptr[j-1+(i+1)*width] >=center)<<1 ;
                 code|=((int)ptr[j-1+(i)*width] >=center)<<0 ;
-                optr[j+i*width]=code;
+                }
+                int check=0;
+                check=code;
+                //heck if the code is uniform code
+                //encode only if it is a uniform code else
+                //assign it a number 255
+                optr[j+i*width]=lookup[code];
+
             }
         }
+
+    }
+
+    void spatialHistogram(Mat lbpImage)
+    {
+        uchar *ptr=lbpImage.data;
+        vector<float> histogram;
+        histogram.resize(58);
+    /*    for(int i=0;i<lbpImage.rows;i++)
+        {
+            for(int j=0;j<lbpImage.cols;j++)
+            {
+                if(code==128)
+                {
+
+                }
+            }
+        }
+*/
 
     }
 
