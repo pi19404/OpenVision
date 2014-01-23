@@ -2,19 +2,22 @@
 #define LBPFEATURES_H
 #include "Common/OpenCVCommon.hpp"
 #include "ImgFeatures/integralImage.h"
+#include "ImgProc/Histogram.hpp"
 class LBPFeatures
 {
 public:
     LBPFeatures()
     {
-     initUniform();
+        sizeb=58;
     }
     Mat image;
     vector<uchar> features;
     Mat mask;
     IntegralImage ix;
     vector<int> lookup;
-
+    int sizeb;
+    //class which computes the histogram
+    ocv::Histogram hist;
 
     //naive count number of set bits
     bool countSetBits1(int code)
@@ -30,7 +33,7 @@ public:
     }
 
     // Brian Kernighan's method to count set bits
-    bool countSetBits(int code)
+    int countSetBits(int code)
     {
       int count=0;
       int v=code;
@@ -41,31 +44,38 @@ public:
       return count;
     }
 
+    int rightshift(int num, int shift)
+    {
+        return (num >> shift) | ((num << (8 - shift)&0xFF));
+    }
 
     //checking if code is uniform or not
     bool checkUniform(int code)
     {
-      int b = code >> 1;
+        int b = rightshift(code,1);
+      ///int d = code << 1;
       int c = code ^ b;
-      int count=countSetBits(c);
-      if ((count%2)==0 || count==0 || count==1)
-          return 1;
+      //d= code ^d;
+      int count=countSetBits(c);      
+      //int count1=countSetBits(d);
+      if (count <=2 )
+          return true;
       else
-          return 0;
+          return false;
     }
 
     //3x3 neighborhood will have 8 neighborhood pixels
     //all non uniform codes are assigned to 59
     void initUniform()
     {
-        lookup.resize(59);
+        lookup.resize(255);
         int index=0;
-        for(int i=0;i<255;i++)
+        for(int i=0;i<=255;i++)
         {
             bool status=checkUniform(i);
             if(status==true)
             {
-                lookup[i]=index;
+                lookup[i]=index;                
                 index++;
             }
             else
@@ -73,6 +83,9 @@ public:
                 lookup[i]=59;
             }
         }
+
+        initHistogram();
+
     }
 
 
@@ -118,23 +131,57 @@ public:
 
     }
 
-    void spatialHistogram(Mat lbpImage)
+    void initHistogram()
     {
-        uchar *ptr=lbpImage.data;
-        vector<float> histogram;
-        histogram.resize(58);
-    /*    for(int i=0;i<lbpImage.rows;i++)
-        {
-            for(int j=0;j<lbpImage.cols;j++)
-            {
-                if(code==128)
-                {
+        vector<int> channel;
+        channel.push_back(0);
+        hist.setChannel(channel);
+        vector<int> size;
+        size.push_back(sizeb+1);
+        hist.setHistSize(size);
 
+    }
+
+
+    Mat computeHistogram(Mat cell)
+    {
+        Mat tmp_hist;
+        hist.BuildHistogram(cell);
+        hist.getHist().copyTo(tmp_hist);
+        //tmp_hist=tmp_hist/tmp_hist.total();
+        return tmp_hist;
+    }
+
+    vector<float> spatialHistogram(Mat lbpImage,Size grid)
+    {                
+        vector<float> histogram;
+        histogram.resize(grid.width*grid.height*sizeb);
+        int width=lbpImage.cols/grid.width;
+        int height=lbpImage.rows/grid.height;
+        int cnt=0;
+        //#pragma omp parallel for
+        for(int i=0;i<grid.height;i++)
+        {
+            for(int j=0;j<grid.width;j++)
+            {
+                Mat cell=lbpImage(Rect(j*width,i*height,width,height));
+                Mat cell_hist=computeHistogram(cell);
+                //imshow("FFF",cell_hist);
+                Mat tmp_feature;
+                cell_hist.reshape(1,1).convertTo(tmp_feature,CV_32FC1);
+                float * ptr=tmp_feature.ptr<float>(0);
+                for(int k=0;k<tmp_feature.cols-1;k++)
+                {
+                    if(ptr[k]==0)
+                        ptr[k]=1.0/sizeb;
+                    histogram[(cnt*sizeb)+k]=ptr[k];
+                  //  cerr << ptr[k] << endl;
                 }
+                cnt++;
             }
         }
-*/
 
+        return histogram;
     }
 
     void computeBlock(Mat image,Mat & dst,int block=2)
@@ -195,6 +242,7 @@ public:
                     Rect r1=Rect(x,y,block,block);
                     int val=(int)ix.calcMean(r1);
                     code|=(meanv >= val)<<(7-k);
+                    code=lookup[code];
 
                 }
                 Mat roi=dst(r);
