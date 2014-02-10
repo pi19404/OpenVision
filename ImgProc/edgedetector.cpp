@@ -1,4 +1,4 @@
-#include "edgedetector.h"
+#include "edgedetector.hpp"
 
 EdgeDetector::EdgeDetector()
 {
