@@ -9,11 +9,12 @@ public:
     SeperableSConvolution();
     vector<Mat> rowk;//vector of row filter
     vector<Mat> colk;//vector of column filters
-    vector<bool> symmetric; //info if filter is symmetric or not
+    vector<bool> rsymmetric; //info if filter is symmetric or not
+    vector<bool> csymmetric; //info if filter is symmetric or not
     int N;//number of channels in the output image
 
     //function to set the filter parameters
-    void setKernel(Mat row,Mat col,bool symm);
+    void setKernel(Mat row,Mat col,bool symm,bool symm1);
     //function to clear the filter parameters
     void clearKernel();
 
