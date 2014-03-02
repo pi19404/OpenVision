@@ -2,7 +2,7 @@
 
 Gaussian::Gaussian()
 {
-    t.t=gtype::TYPE_SPHERICAL;
+    t.t=gtype::TYPE_FULL;
 }
 
 void Gaussian::validate(float &res)
@@ -42,6 +42,37 @@ float Gaussian::Prob(Mat &x)
 
     res=_scale*exp(-0.5*res);
     validate(res);
+    return res;
+}
+
+
+
+float Gaussian::logProb(Mat &x)
+{
+    MatrixXf tmp;
+    tmp=setData(x);
+
+    float res=0;
+    if(t.t==gtype::TYPE_FULL)
+    {
+
+    MatrixXf tmp1=(tmp-_mu).transpose();
+    tmp1=_LI*tmp1;
+    MatrixXf tmp2=tmp1.transpose()*tmp1;
+    res=tmp2(0,0);
+    }
+    else if(t.t==gtype::TYPE_SPHERICAL)
+    {
+
+
+    }
+    else if(t.t==gtype::TYPE_DIAGONAL)
+    {
+
+    }
+
+    res=std::log(_scale)+(-0.5*res);
+    //validate(res);
     return res;
 }
 

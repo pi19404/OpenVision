@@ -65,7 +65,7 @@ class Histogram
          * @param srcImage input single channel 8 bit image
          * @return  histogram matrix
          */
-        cv::Mat BuildHistogram(cv::Mat srcImage);
+     cv::Mat BuildHistogram(cv::Mat srcImage,bool accumulate=false);
 
         /**
          * @brief getThresh methods returns the pixel index corresponding to s1% from lower tail and s2% from the upper tails of histogram

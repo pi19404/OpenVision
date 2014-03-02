@@ -3,11 +3,7 @@
 
 #include "Common/OpenCVCommon.hpp"
 #include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Core>
-#include <opencv2/core/eigen.hpp>
-using namespace Eigen;
-
+#include "ImgML/eigenutils.hpp"
 
 #define PI CV_PI
 namespace ocv
@@ -24,6 +20,7 @@ class Gaussian
     float _scale;
     float _det;
     int _dim;
+    float prior;
 
 
 
@@ -42,6 +39,8 @@ public:
 
     //function to compute the pdf of multivatiate gaussian distribution
     float Prob(Mat &x);
+
+    float logProb(Mat &x);
 
 
     //function to set the value of mean vector

@@ -39,7 +39,8 @@ float Histogram::compareHist(Histogram h2,int method=comparison_method::NORM_L1)
     Mat H2=h2.getHist();
     const Mat* arrays[] = {&H1, &H2, 0};
 
-
+  //  H1.t()
+//    cv::pyrDown()
     //planes,number of channels of histogram
     Mat planes[2];
 
@@ -206,7 +207,7 @@ for(int i=0;i<size;i++)
 }
 
 
-cv::Mat Histogram::BuildHistogram(cv::Mat srcImage){
+cv::Mat Histogram::BuildHistogram(cv::Mat srcImage,bool accumulate){
     cv::Mat histMat;
     //compute  histogram
     int *c=(int *)calloc(sizeof(int),_channels.size());
@@ -234,7 +235,7 @@ cv::Mat Histogram::BuildHistogram(cv::Mat srcImage){
         ranges[i]=x;
         //cerr << x[0] << ":" <<x[1] <<endl;
     }
-    cv::calcHist(&srcImage,1,c, cv::Mat(),_histMat,_channels.size(),h,(const float **)ranges, true, false);
+    cv::calcHist(&srcImage,1,c, cv::Mat(),_histMat,_channels.size(),h,(const float **)ranges, true, accumulate);
     for(int i=0;i<size;i++)
     {
         free(ranges[i]);
@@ -243,7 +244,7 @@ cv::Mat Histogram::BuildHistogram(cv::Mat srcImage){
     free(c);
     free(h);
     //normalize histogram
-    normalize( _histMat, _histMat,1,0,NORM_L1);
+    //normalize( _histMat, _histMat,1,0,NORM_L1);
     //Scalar v=cv::sum(_histMat);
     //cerr << "cumulative" << v[0] <<endl;
     //copy histogram

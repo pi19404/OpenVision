@@ -15,10 +15,10 @@ float IntegralImage::calcMean(Rect r)
            int width=_integral.cols;
            int height=_integral.rows;
            unsigned int *ii1 =(unsigned int *)_integral.data;
-           int a=r.x+(r.y*width);
-           int b=(r.x+r.width)+(r.y*width);
-           int c=r.x+((r.y+r.height)*width);
-           int d=(r.x+r.width)+(r.y+r.height)*width;
+           int a=r.x+(r.y*(width));
+           int b=(r.x+r.width)+(r.y*(width));
+           int c=r.x+((r.y+r.height)*(width));
+           int d=(r.x+r.width)+(r.y+r.height)*(width);
            float mx=ii1[a]+ii1[d]-ii1[b]-ii1[c];
            mx=mx/(r.width*r.height);
        return mx;

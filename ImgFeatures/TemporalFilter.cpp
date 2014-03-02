@@ -40,11 +40,11 @@ void Temporal_Filter::Log_filter(float input[],float mask[])
 
 Temporal_Filter::Temporal_Filter()
 {
-    cerr << "const" << endl;
+    ///cerr << "const" << endl;
     PI=3.1412;
-    ksize=7;
+    ksize=3;
     var=2;
-    M=4;
+    M=2;
     k=0;
     index1=0;
     mask=(float*)calloc(ksize,sizeof(float));
@@ -79,9 +79,7 @@ Mat Temporal_Filter::temporal_filter(Mat input1)
         float f1=(((i+1-M)*(i+1-M)/(var))-1);
         float v=(((float)-1*(i+1-M)*(i+1-M))/(float)(2*var));
         mask[i]=scale*std::exp(v)*f1;
-
         temp=temp+mask[i];
-
         }
 
         //normalising the kernel masks
@@ -132,6 +130,7 @@ Mat Temporal_Filter::temporal_filter(Mat input1)
 
                     //compute the log filter output
                     Log_filter(input,mask);
+
                     for(int m=0;m<ksize-1;m++)
                     {
 
@@ -143,7 +142,7 @@ Mat Temporal_Filter::temporal_filter(Mat input1)
                             break;
 
                         }
-                        else if(((m>1 && m <ksize) && output[m]==0) && ((output[m-1]>0 && output[m+1] <0 )||(output[m-1]<0 && output[m+1] >0 )))
+                        else if(/*((m>1 && m <ksize) && output[m]==0) &&*/m>1&& ((output[m-1]>0 && output[m] <0 ) || (output[m-1]<0 && output[m] >0 )|| (output[m]<0 && output[m+1] >0 )||(output[m]>0 && output[m+1] <0 )||(output[m-1]>0 && output[m+1] <0 )||(output[m-1]<0 && output[m+1] >0 )))
                         {
                             dst.at<uchar>(i,j)=output[m];
                         }

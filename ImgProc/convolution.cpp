@@ -6,20 +6,12 @@ SeperableSConvolution::SeperableSConvolution()
 
 void SeperableSConvolution::setKernel(Mat row,Mat col,bool rsymm,bool csymm)
 {
-    if(rowk.size()!=0)
-    {
-
-        //cerr << rowk.size() <<endl;
-        //cerr << row.cols <<":" << row.rows <<":" << N << endl;
-        //cerr << col.cols <<":" << col.rows << endl;
-    //    assert(row.rows==N && col.rows==N);
-    }
-    //cerr << row <<endl;
-    //cerr << col << endl;
     N=std::max(row.cols,row.rows);
     rowk.push_back(col.clone());
     colk.push_back(row.clone());
-    //if(rowk.size()>1)
+
+    cerr <<row <<endl;
+    cerr << col << endl;
     csymmetric.push_back(rsymm);
     rsymmetric.push_back(csymm);
 }
@@ -62,7 +54,7 @@ void SeperableSConvolution::apply(Mat &src,Mat &dst)
          //using the row kernel
          for(int x = 0; x < s.width; x++ )
          {
-            #pragma unroll
+             #pragma unroll_factor=20
              for(int l=0;l<ch;l++)
              {
              row[x*ch+l] = srow0[x]*(rowk[l].at<float>(n));
@@ -91,19 +83,7 @@ void SeperableSConvolution::apply(Mat &src,Mat &dst)
        }
 
 
-       //initialize the border pixels of the buffer
-       //replicate pixels on the other size
-/*
-       for(int x=0;x<n;x++)
-       {
-           int c=1;
-           for(int l=0;l<ch;l++)
-           {
-           row[(-c-x)*ch+l]=row[(-x-c+1)*ch+l];
-           row[(s.width+x)*ch+l]=row[(s.width+x-c)*ch+l];
-           }
-       }
-*/
+
        //preforming horizontal convoltuion
 
        for(int x=0;x<s.width;x++)

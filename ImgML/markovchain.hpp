@@ -12,10 +12,7 @@
 class markovChain
 {
 public:
-    markovChain()
-    {
-        srand(time(NULL));
-    }
+    markovChain();
 
     /* _transition holds the transition probability matrix
      * _initial holds the initial probability matrix

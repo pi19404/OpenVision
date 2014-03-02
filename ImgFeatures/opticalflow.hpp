@@ -3,6 +3,7 @@
 #include "Common/OpenCVCommon.hpp"
 #include "ImgProc/convolution.hpp"
 #include "ImgProc/channelfilter.hpp"
+#include "ImgBasis/polybasis.hpp"
 typedef Vec<float,6> Vec6f;
 typedef Vec<float,5> Vec5f;
 class DenseFlow
@@ -18,6 +19,8 @@ public:
     Size win;
     Mat G;
     Mat flow;
+
+    polyBasis poly;
 
     SeperableSConvolution filter;
     channelFilter cfilter;
@@ -46,21 +49,6 @@ public:
         return index;
     }
 
-    void meshGrid(Mat &x,Mat &y,int size)
-    {
-        x.create(size,size,CV_32FC1);
-        y.create(size,size,CV_32FC1);
-        for (int i = 0;i<size; i++) {
-            x.at<float>(0,i) = i-floor(size/2);
-            y.at<float>(i,0) = i-floor(size/2);
-        }
-
-
-        x = repeat(x.row(0),size,1);
-        y = repeat(y.col(0),1,size);
-
-
-    }
 
     double roundToDecimal(double d, short DecimalPlaces)
     {
@@ -86,51 +74,8 @@ public:
 
     }
 
-    void gaussian2Dkernel(Mat &kernel,int size)
-    {
-        Mat x,y;
-        meshGrid(x,y,size);
-        Mat k=cv::getGaussianKernel(size,1,CV_32F);
-        k=k.t();
-        cv::mulTransposed(k,kernel,true);
 
 
-
-    }
-
-
-    void computeFilters()
-    {
-        meshGrid(x,y,7);
-        cv::pow(x,2,xx);
-        cv::pow(y,2,yy);
-        cv::multiply(x,y,xy);
-        xy.copyTo(c);
-        c.setTo(cv::Scalar::all(1));
-        gaussian2Dkernel(kernel,7);
-
-
-        polyBasis(G,x,y,xx,yy,xy,kernel);
-
-        cv::multiply(x,kernel,x);
-        cv::multiply(y,kernel,y);
-        cv::multiply(xx,kernel,xx);
-        cv::multiply(yy,kernel,yy);
-        cv::multiply(xy,kernel,xy);
-        cv::multiply(c,kernel,c);
-
-
-
-        G.copyTo(cfilter.kernel);
-        fy=cv::createLinearFilter(CV_32F,CV_32F,x,Point(-1,-1),0,BORDER_REPLICATE);
-        fx=cv::createLinearFilter(CV_32F,CV_32F,y,Point(-1,-1),0,BORDER_REPLICATE);
-        fyy=cv::createLinearFilter(CV_32F,CV_32F,xx,Point(-1,-1),0,BORDER_REPLICATE);
-        fxx=cv::createLinearFilter(CV_32F,CV_32F,yy,Point(-1,-1),0,BORDER_REPLICATE);
-        fxy=cv::createLinearFilter(CV_32F,CV_32F,xy,Point(-1,-1),0,BORDER_REPLICATE);
-        fc=cv::createLinearFilter(CV_32F,CV_32F,c,Point(-1,-1),0,BORDER_REPLICATE);
-
-        computeSeparableFilters(7);
-    }
 
     void FarnebackPolyExp( const Mat& src, Mat& dst, int n, double sigma )
     {
@@ -575,13 +520,13 @@ public:
             cv::resize(i2,i2,pyr_size,0,0,INTER_LINEAR );
 
 
-            int ind=0;
-            filter.apply(i1,res[prev_index]);
-            filter.apply(i2,res[cur_index]);
+
+            poly.filter.apply(i1,res[prev_index]);
+            poly.filter.apply(i2,res[cur_index]);
 
             Mat dst1,dst2;
-            cfilter.apply(res[prev_index],dst1);
-            cfilter.apply(res[cur_index],dst2);
+            poly.cfilter.apply(res[prev_index],dst1);
+            poly.cfilter.apply(res[cur_index],dst2);
 
 
             cv::split(dst1,channels);
@@ -617,7 +562,7 @@ public:
         }
         else
         {
-            computeFilters();
+            poly.computeFilters(7);
             s=Size(image.cols,image.rows);
             initFlow();
             o1.resize(5);
