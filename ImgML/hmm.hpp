@@ -4,6 +4,9 @@
 #include "ImgML/eigenutils.hpp"
 #include "Common/OpenCVCommon.hpp"
 #include "ImgML/gaussianmixture.hpp"
+#include <ImgConfig/ConfigLib/lib/libconfig.h++>
+using namespace std;
+using namespace libconfig;
 /**
  * @brief The HMM class :
  * This class encapsulates the representation of a Discrete Hidden Markov model
@@ -115,6 +118,15 @@ public:
      * @return
      */
     float likelyhood(Mat sequence);
+
+
+    /**
+     * @brief loadConf : the method the load the model parameters
+     *from the configuration file
+     * @param conf  :the input string containing the path of the
+     *configuration files
+     */
+    bool loadConf(Config &,char *conf);
 
 
 };
