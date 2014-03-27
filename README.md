@@ -27,7 +27,7 @@ Fast3d,Harris3D
 * SubPixel Corner Localization
 
 * Feature Descriptors
-HOG - Histogram of oriented gradients ,LBP -Local Binary Pattern,Random Ferns
+  HOG - Histogram of oriented gradients ,LBP -Local Binary Pattern,Random Ferns
 
 * Temporal Filters
 
@@ -45,13 +45,30 @@ HOG - Histogram of oriented gradients ,LBP -Local Binary Pattern,Random Ferns
 * Polynomial Image Basis Representation
 * Tracking Based on Random Ferns
 * Mean Shift Tracking
+* Discrete Emission Time Hidden markov model for sequence Classification
+* Continuous Hidden markov model for sequence Classification
+* Logistic Regression Classifier
+* Dense optical flow using polynomial basis
+
+
+ARM Neon Optimization
+* Deinterlacing and Interlacing
 
 Topics in progress
 * Visual odometry
-* Dense optical flow using polynomial basis
-* Hidden markov model for sequence Classification
 * Sparse Optical Flow Tracking
-
+* LibSVM API in C/C++
+* ARM Neon : BGR2GRAY
+* Circle Detection using RANSAC
+* Rotationally Invariant object detection Framwork 
+* Mean flow tracker
+* Mean Shift Tracking using histogram similarity
+* Maximum Entropy Markov Models for Sequence classification
+* K Means Clustering Algorithm
+* Gaussian Mixture Models and EM Algorithm
+* HMM Training Using Vitrebi training
+* HMM Training using Bahum Welch algorithm
+* 
 
 
 
