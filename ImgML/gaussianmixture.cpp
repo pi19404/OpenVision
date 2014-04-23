@@ -1,5 +1,5 @@
 #include "ImgML/gaussianmixture.hpp"
-
+#include "ImgML/eigenutils.hpp"
 
 
 GaussianMixture::GaussianMixture()
@@ -19,7 +19,7 @@ void GaussianMixture::setnmix(int n)
 void GaussianMixture::setGaussian(Gaussian a,float prior)
 {
     _components[index]=a;
-    _weights[index]=prior;
+    _weights[index]=std::log(prior);
     index=index+1;
 }
 
@@ -61,13 +61,22 @@ vector<float> GaussianMixture::ProbMix(Mat X)
  */
 float GaussianMixture::Prob(Mat X)
 {
-    float res=0;
+
+
+    //double res=0;
+    vector<float> res;
+
+    res.resize(_nmix);
+   // #pragma omp parallel for
     for(int i=0;i<_nmix;i++)
     {
-    //    cerr << _weights[i] << endl;
-        res=res+_weights[i]*(_components[i].Prob(X));
+        res[i]=(_weights[i]+_components[i].Prob(X));
     }
-    return res;
+
+
+    float r=EigenUtils::logsumexp(res);
+
+    return r;
 }
 
 

@@ -10,8 +10,8 @@ void SeperableSConvolution::setKernel(Mat row,Mat col,bool rsymm,bool csymm)
     rowk.push_back(col.clone());
     colk.push_back(row.clone());
 
-    cerr <<row <<endl;
-    cerr << col << endl;
+//    cerr <<row <<endl;
+  //  cerr << col << endl;
     csymmetric.push_back(rsymm);
     rsymmetric.push_back(csymm);
 }
@@ -30,6 +30,7 @@ void SeperableSConvolution::apply(Mat &src,Mat &dst)
 
 
     int ch=rowk.size();
+
     Size s=Size(src.cols,src.rows);
     int n=floor((N+0.5)/2);
 
@@ -37,8 +38,11 @@ void SeperableSConvolution::apply(Mat &src,Mat &dst)
     dst.create(s.height,s.width,CV_32FC(ch));
     //ch=1;
     //temporary buffer allocated on the stack
+
+
     AutoBuffer<float> _row((s.width + n*2)*ch);
     AutoBuffer<float> _res(ch);
+
 
     float *res=(float*)_res;
     float *row = (float*)_row + n*ch;
@@ -59,7 +63,6 @@ void SeperableSConvolution::apply(Mat &src,Mat &dst)
              {
              row[x*ch+l] = srow0[x]*(rowk[l].at<float>(n));
              }
-
          }
 
 
@@ -73,12 +76,13 @@ void SeperableSConvolution::apply(Mat &src,Mat &dst)
         srow1 = (float*)(src.data + src.step*std::min(y+k,s.height-1));
         for(int x=0;x<s.width;x++)
         {
-            #pragma unroll
+            #pragma unroll            
             for(int l=0;l<ch;l++)
             {
             float p=srow0[x]+(1*(rsymmetric[l]?1:-1))*srow1[x];
             row[x*ch+l]+=(rowk[l].at<float>(n-k))*(p);
             }
+
         }
        }
 

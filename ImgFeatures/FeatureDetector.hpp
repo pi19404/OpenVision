@@ -79,7 +79,7 @@ protected:
     const T arr;
     };
 
-
+public:
     uint maxCorners;    //maximum number of corners to be detected
     double qualityLevel;    //quality level for corner response function
     int minDistance;        //min distance between detected points

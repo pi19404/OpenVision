@@ -17,7 +17,7 @@
 
 #include "ContrastStretching.hpp"
 using namespace ImgProc;
-
+using namespace ocv;
 
 ContrastStretching::ContrastStretching()
 {

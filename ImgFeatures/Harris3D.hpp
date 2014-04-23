@@ -67,7 +67,7 @@ class SpatioTemporalDerivativeFilter
 
 };
 
-class Harris3D :public FeatureDetector
+class Harris3D :public ocv::FeatureDetection::FeatureDetector
 {
 
 vector <int> block_size;          // a vector to hold the block size of spatial and temporal dimensions.

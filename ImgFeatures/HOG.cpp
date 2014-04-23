@@ -24,7 +24,6 @@
 
 
 
-#include <QtGui/QApplication>
 
 
 #include "cv.h"
@@ -32,11 +31,11 @@
 #include <iostream>
 #include "cv.h"
 #include "highgui.h"
-#include <QtGui/QImage>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/QString>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
+//#include <QtGui/QImage>
+//#include <QtCore/qfileinfo.h>
+//#include <QtCore/QString>
+//#include <QtCore/QDir>
+//#include <QtCore/QFile>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/features2d/features2d.hpp"
@@ -394,7 +393,7 @@ int calculate_features(IplImage *Im,vector<float>& descriptors,float label,bool 
     {
         Mat image=Mat(Im);
         cvtColor(image,image,CV_BGR2GRAY);
-        cv::threshold(image,image,0,255,CV_THRESH_BINARY);
+        cv::threshold(image,image,0,255,CV_THRESH_BINARY|CV_THRESH_OTSU);
         Moments moments =cv::moments(image,true);
         double h[7];
         HuMoments(moments,h);
@@ -412,13 +411,13 @@ int calculate_features(IplImage *Im,vector<float>& descriptors,float label,bool 
 }
 
 
-
+/*
 /**
  * @brief main  MAIN function of application
  * @param argc
  * @param argv
  * @return
- */
+ ///
 
 int main(int argc, char *argv[])
 {
@@ -539,4 +538,4 @@ int main(int argc, char *argv[])
 
 
 }
-
+*/

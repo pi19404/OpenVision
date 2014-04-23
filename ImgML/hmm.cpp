@@ -12,9 +12,9 @@
 void ocv::DHMM::setData(Mat transition,Mat emission,Mat initial)
 {
 
-    _transition=EigenUtils::setData(transition);
-    _initial=EigenUtils::setData(initial);
-    _emission=EigenUtils::setData(emission);
+    _transition=EigenUtils::setDataf(transition);
+    _initial=EigenUtils::setDataf(initial);
+    _emission=EigenUtils::setDataf(emission);
     _nstates=_transition.rows();
     _nobs=_emission.rows();
     _seqlen=0;
@@ -180,15 +180,22 @@ float ocv::DHMM::likelyhood(vector<int> sequence)
 
 
 //methods for continuous emission hidden markov models
-void ocv::CHMM::setData(Mat transition,Mat initial,vector<GaussianMixture> emission)
+void ocv::CHMM::setData(Mat transition,Mat initial,vector<GaussianMixture> emission,float _lthresh1,int maxseq)
 {
     _transition=EigenUtils::setData(transition);
     _initial=EigenUtils::setData(initial);
+
+    _initial=_initial.array().log().matrix();
+    _transition=_transition.array().log().matrix();
     _emission=emission;
     _nstates=_transition.rows();
     _nobs=_emission.size();
     _seqlen=0;
+    _maxseqlen=maxseq;
+    _lthresh=_lthresh1;
 
+    _alpha=MatrixXd(_nstates,_maxseqlen);
+    _scale=MatrixXd(1,_maxseqlen);
 
 }
 
@@ -207,8 +214,6 @@ void ocv::CHMM::forwardMatrix(Mat &sequence)
     int len=sequence.rows;
     int dim=sequence.cols;
     _seqlen=len-1;
-    _alpha=MatrixXf(_nstates,_seqlen+1);
-    _scale=MatrixXf(1,_seqlen+1);
 
     for(int i=0;i<len;i++)
     {
@@ -230,19 +235,20 @@ void ocv::CHMM::forwardMatrix(Mat &sequence)
                 //need to verifyt the forward algorithm
                 _alpha(j,i)=_emission[j].Prob(sequence.row(i))*s;
             }
-            //cerr << endl;
-
-
 
     }
 
-        //cerr << _alpha << endl;
+
+
     float scale=0;
     for(int j=0;j<_nstates;j++)
     {
         scale=scale+_alpha(j,i);
     }
-    scale=1.f/scale;
+    //scale=scale+std::numeric_limits<float>::epsilon();
+    if(scale==0)
+        scale=std::numeric_limits<float>::epsilon();
+    scale=1.f/(scale);
     //commented the below code need to verify
     //if(i==0)
 //       _scale(0,i)=1;
@@ -262,6 +268,79 @@ void ocv::CHMM::forwardMatrix(Mat &sequence)
 }
 
 
+
+/**=
+ * @brief forwardMatrix : method computes probability //compute p(x1 ... xn,zn)
+ *                        using the forward algorithm
+ * @param sequence : is input observation sequence
+ */
+void ocv::CHMM::forwardMatrixIterative(Mat &sequence,bool init,int i)
+{
+
+
+
+    int dim=sequence.cols;
+
+
+
+        for(int j=0;j<_nstates;j++)
+        {
+            if(init==true||i==0)
+            {
+            _alpha(j,0)=_emission[j].Prob(sequence)+(_initial(0,j));
+            }
+            else
+            {
+                float s=0;
+                vector<float> work;
+                for(int k=0;k<_nstates;k++)
+                work.push_back((_transition(k,j))+_alpha(k,i-1));
+
+\
+                float r=EigenUtils::logsumexp(work);
+                //changed from sequence.row(i-1) to sequence.row(i)
+                //need to verifyt the forward algorithm
+                _alpha(j,i)=_emission[j].Prob(sequence)+r;
+            }
+            //cerr << _emission[j].Prob(sequence) << endl;
+
+
+        }
+
+
+    float scale=0;
+    vector<float> alpha;
+    for(int j=0;j<_nstates;j++)
+    {
+        if(_alpha(j,i)<=-1e200)
+            _alpha(j,i)=-1*std::numeric_limits<float>::infinity();
+        alpha.push_back(_alpha(j,i));
+    }
+    scale=EigenUtils::logsumexp(alpha);
+    //cerr << scale << ":" ;
+    //if(scale==0)
+    //    scale=std::numeric_limits<float>::epsilon();
+    //scale=1.f/(scale);
+
+
+
+    //commented the below code need to verify
+    //if(i==0)
+//       _scale(0,i)=1;
+  //  else
+    _scale(0,i)=scale;
+
+    /*for(int j=0;j<_nstates;j++)
+    {
+        _alpha(j,i)=scale*_alpha(j,i);
+    }*/
+
+
+
+}
+
+
+
 bool CHMM::loadConf(Config &cfg,char *model_str)
 {
 
@@ -270,13 +349,16 @@ bool CHMM::loadConf(Config &cfg,char *model_str)
     Setting &hmm = root["HMM"];
     Setting &_nclasses=hmm["nclasses"];
     Setting &_models=hmm["models"];
-    int ndim=hmm["ndim"];
-    Setting &model=hmm[model_str];
+    int ndim=(int)hmm["ndim"];
+    Setting &model=hmm[(const char *)model_str];
 
-        //cerr << "HMM Model " << _models[i].c_str() << endl;
+
 
         int nstates=model["nstates"];
         int ncomponents=model["ncomponents"];
+        float lthresh=model["lthresh"];
+        //lthresh=lthresh;
+
 
 
 
@@ -312,11 +394,11 @@ bool CHMM::loadConf(Config &cfg,char *model_str)
                 Setting &mix=emission[(const char *)str];
 
                 Setting &mean=mix["mean"];
-                vector<float> _mean;
-                _mean.resize(ndim);
+                Mat _mean=Mat(1,ndim,CV_32FC1);
+                //_mean.resize(ndim);
                 for(int l=0;l<ndim;l++)
                 {
-                    _mean[l]=(float)mean[l];
+                    _mean.at<float>(l)=(float)mean[l];
                 }
                 g1.setMean(_mean);
 
@@ -325,12 +407,20 @@ bool CHMM::loadConf(Config &cfg,char *model_str)
 
 
                 Mat _covar=Mat(ndim,ndim,CV_32FC1);
-                for(int l=0;l<ndim*ndim;l++)
+                int cc=0;
+                for(int l=0;l<ndim;l++)
                 {
-                    _covar.at<float>(l)=covar[l];
+                    for(int m=0;m<ndim;m++)
+                    {
+                    _covar.at<float>(l,m)=(float)covar[cc];
+                    cc++;
+                    }
                 }
+
                 g1.setSigma(_covar);
+
                 float weight=(float)mix["weight"];
+
                 g.setGaussian(g1,weight);
 
             }
@@ -338,7 +428,8 @@ bool CHMM::loadConf(Config &cfg,char *model_str)
 
         }
 
-        this->setData(_transition,_initial,gauss);
+
+        this->setData(_transition,_initial,gauss,lthresh);
 
 
 
@@ -356,19 +447,50 @@ float ocv::CHMM::likelyhood(Mat sequence)
     //using forward algorithm
     forwardMatrix(sequence);    
 
-    ///cerr << "BB" << _scale << endl;
-    //cerr << "AA" << _alpha << endl;
+
+
     //computing the log probability of observed sequence
     for(int i=0;i<sequence.rows;i++)
     {
         //for(int j=0;j<_nstates;j++)
         {
-            //cerr << std::log(_scale(0,i)) << endl;
+
             prob=prob+std::log(_scale(0,i));
         }
     }
-    cerr << "AA" << prob << endl;
+
 
     return -prob;
 }
 
+/**
+ * @brief likelyhood : method to compute the log
+ *                     likeyhood of observed sequence
+ * @param sequence    :input observation sequence
+ * @return
+ */
+float ocv::CHMM::predictIterative(Mat sequence,bool init)
+{
+
+    //computing the probability of observed sequence
+    //using forward algorithm
+
+    if(init==true)
+    {
+        count=0;
+        prob=0;
+        _alpha=MatrixXd(_nstates,_maxseqlen);
+        _scale=MatrixXd(1,_maxseqlen);
+
+    }
+    int i=count;
+
+      forwardMatrixIterative(sequence,init,i);
+      prob=(_scale(0,i));
+
+      //prob=-prob;
+      //cerr << prob <<":" << count <<"--";
+    count=count+1;
+
+    return prob;
+}

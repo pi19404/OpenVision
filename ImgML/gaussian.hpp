@@ -13,14 +13,14 @@ namespace ocv
 class Gaussian
 {
 
-    MatrixXf _mu;
-    MatrixXf _Sigma;
-    MatrixXf _invsigma;
-    MatrixXf _LI;
-    float _scale;
-    float _det;
+    MatrixXd _mu;
+    MatrixXd _Sigma;
+    MatrixXd _invsigma;
+    LLT<MatrixXd> _LI;
+    double _scale;
+    double _det;
     int _dim;
-    float prior;
+    double prior;
 
 
 
@@ -48,7 +48,7 @@ public:
     void setMean(Mat &v);
 
     //function to initialize eigen matrix datastructure with opencv Mat
-    MatrixXf setData(cv::Mat &v);
+    MatrixXd setData(cv::Mat &v);
 
     //function to set the value of covariance matrix
     void setSigma(cv::Mat &v);

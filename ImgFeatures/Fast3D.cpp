@@ -13,7 +13,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  * ========================================================================
- */#include "Fast3D.hpp"
+ */
+#include "ImgFeatures/Fast3D.hpp"
 
 using namespace FeatureDetection;
 

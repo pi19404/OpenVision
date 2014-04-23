@@ -27,7 +27,7 @@ namespace FeatureDetection
 
 
 
-class Fast3D :public FeatureDetector
+class Fast3D :public ocv::FeatureDetection::FeatureDetector
 {
 
 
@@ -78,7 +78,7 @@ vector<cv::Point2f> run(Mat src);
 int get_count()
 {
             return corner_count;
- }
+}
 
 };
 }

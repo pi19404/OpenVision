@@ -121,7 +121,7 @@ public:
       * @param pyr_scale : scaling factor
       * @param iterations : number of iterations
       */
-     void compute(Mat image,int levels=1,float pyr_scale=0.9,int iterations=3);
+     void compute(Mat image,int levels=1,float pyr_scale=0.9,int iterations=3,bool init=false);
 
 };
 

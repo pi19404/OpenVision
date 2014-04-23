@@ -13,8 +13,8 @@ markovChain::markovChain()
  */
 void markovChain::setModel(Mat transition,Mat initial)
 {
-    _transition=EigenUtils::setData(transition);
-    _initial=EigenUtils::setData(initial);
+    _transition=EigenUtils::setDataf(transition);
+    _initial=EigenUtils::setDataf(initial);
 }
 
 /**

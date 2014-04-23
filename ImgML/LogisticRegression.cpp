@@ -1,4 +1,4 @@
-#include "logisticregression.hpp"
+#include "LogisticRegression.hpp"
 
 logisticRegression::logisticRegression()
 {

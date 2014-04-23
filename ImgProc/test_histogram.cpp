@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "ImgProc/Histogram.hpp"
+using namespace ocv;
 using namespace std;
 
 int test_histogram(int argc, char** argv )

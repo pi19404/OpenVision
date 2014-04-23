@@ -271,7 +271,7 @@ DenseOF::AverageFlow( const Mat& _R0, const Mat& _R1,Mat& _flow, Mat& matM,int w
 
 
 
-void DenseOF::compute(Mat image,int levels,float pyr_scale,int iterations)
+void DenseOF::compute(Mat image,int levels,float pyr_scale,int iterations,bool _init)
 {
     int prev_index=getIndex(_index-1);
     int cur_index=_index;
@@ -279,14 +279,23 @@ void DenseOF::compute(Mat image,int levels,float pyr_scale,int iterations)
     float scale=1;
     int m=0;
     image.convertTo(_images[cur_index],CV_32F);
+    init=!_init;
 
 
     if(init==true)
     {
 
+        _images[prev_index].copyTo(i1);
+        _images[cur_index].copyTo(i2);
+        flow.setTo(cv::Scalar::all(0));
+        calcOpticalFlowFarneback(i1,i2, flow,0.5,1,5,3,7,1.1,cv::OPTFLOW_FARNEBACK_GAUSSIAN);
 
+        //calcOpticalFlowFarneback(i1,i2, flow,pyr_scale,levels,win.width,iterations,7,1.1, OPTFLOW_FARNEBACK_GAUSSIAN);
+
+        return;
     Size pyr_size;
     //multiscale iterative loop
+    //prevflow=Mat();
     for(int l=levels;l>=0;l--)
     {
 
@@ -317,6 +326,9 @@ void DenseOF::compute(Mat image,int levels,float pyr_scale,int iterations)
         _images[prev_index].copyTo(i1);
         _images[cur_index].copyTo(i2);
 
+        calcOpticalFlowFarneback(i1,i2, flow,0.9,1,15,3,3,1.0, OPTFLOW_FARNEBACK_GAUSSIAN);
+
+        return;
         //smoothing the image
         GaussianBlur(i1,i1, Size(smooth_sz, smooth_sz), sigma, sigma);
         GaussianBlur(i2,i2,Size(smooth_sz, smooth_sz), sigma, sigma);
@@ -377,6 +389,8 @@ void DenseOF::compute(Mat image,int levels,float pyr_scale,int iterations)
         o1.resize(5);
         o2.resize(5);
         row=Mat(6,1,CV_32F);
+        //buffer_index=0;
+        //prev_flow=Mat();
 
     }
 
