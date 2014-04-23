@@ -78,34 +78,7 @@ public:
     static int init(ThreadPool ** pool, string poolname, int num_worker_threads,int max_queue_size, int do_not_block_when_full);
 
 
-    /*
-    int tpool_full_check(tpool_t * pool)
-    {
-        int rtn = 0;
-        int ret = 0;
-        if (pool == NULL)
-        return -1;
-        if ((rtn = pthread_mutex_lock(&pool->queue_lock)) != 0)
-        {
-       (* pool)->log(__FILE__,__FUNCTION__,__LINE__, FATAL, "pthread mutex lock failure. %s.  ", strerror(rtn));
-        return -1;
-        }
-        if ((pool->cur_queue_size == pool->max_queue_size) &&
-        (pool->do_not_block_when_full))
-        {
-        ret = 0;
-        }
 
-        else
-        ret = 1;
-        if ((rtn = pthread_mutex_unlock(&pool->queue_lock)) != 0)
-        {
-       (* pool)->log(__FILE__,__FUNCTION__,__LINE__, FATAL, "pthread mutex unlock failure. %s.  ", strerror(rtn));
-        return -1;
-        }
-        return ret;
-    }
-*/
 };
 
 

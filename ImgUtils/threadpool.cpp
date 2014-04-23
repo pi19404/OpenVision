@@ -25,7 +25,7 @@ ThreadPool::ThreadPool()
 }
 
 
-static int ThreadPool::respawn_num_threads(ThreadPool *pool)
+ int ThreadPool::respawn_num_threads(ThreadPool *pool)
 {
 int ret=0;
 pthread_mutex_lock(&(pool->queue_lock));
@@ -35,7 +35,7 @@ return ret;
 }
 
 
-static int ThreadPool::get_num_respawn_threads(ThreadPool * pool)
+ int ThreadPool::get_num_respawn_threads(ThreadPool * pool)
 {
 int ret=0;
 pthread_mutex_lock(&(pool->queue_lock));
@@ -46,7 +46,7 @@ return ret;
 
 
 
-static int ThreadPool::get_num_threads(ThreadPool *pool)
+ int ThreadPool::get_num_threads(ThreadPool *pool)
 {
 int ret=0;
 pthread_mutex_lock(&(pool->queue_lock));
@@ -57,7 +57,7 @@ return ret;
 
 
 
-static int ThreadPool::tpool_cleanup(ThreadPool * pool)
+ int ThreadPool::tpool_cleanup(ThreadPool * pool)
 {
 int i=0;
 int ret=0;
@@ -99,7 +99,7 @@ return 0;
 
 
 
-static int ThreadPool::tpool_full_check(ThreadPool * pool)
+ int ThreadPool::tpool_full_check(ThreadPool * pool)
 {
     int rtn = 0;
     int ret = 0;
@@ -128,7 +128,7 @@ static int ThreadPool::tpool_full_check(ThreadPool * pool)
 
 
 
-static int ThreadPool::tpool_add_work(ThreadPool * pool, void (*routine) (void *), void *arg, int arg_size)
+ int ThreadPool::tpool_add_work(ThreadPool * pool, void (*routine) (void *), void *arg, int arg_size)
 {
     int rtn;
     ThreadPoolWork *workp = NULL;
@@ -231,7 +231,7 @@ static int ThreadPool::tpool_add_work(ThreadPool * pool, void (*routine) (void *
 }
 
 
-static int ThreadPool::tpool_destroyEx(ThreadPool * pool)
+ int ThreadPool::tpool_destroyEx(ThreadPool * pool)
 {
     ThreadPoolWork *cur = NULL;
      /**/ int rtn = 0;
@@ -278,7 +278,7 @@ static int ThreadPool::tpool_destroyEx(ThreadPool * pool)
 
 
 
-static int ThreadPool::init(ThreadPool ** pool, string poolname, int num_worker_threads,int max_queue_size, int do_not_block_when_full)
+ int ThreadPool::init(ThreadPool ** pool, string poolname, int num_worker_threads,int max_queue_size, int do_not_block_when_full)
 {
     int i, rtn;
     pthread_attr_t attr_thread;
@@ -435,7 +435,7 @@ static int ThreadPool::init(ThreadPool ** pool, string poolname, int num_worker_
 }
 
 
-static void *ThreadPool::tpool_thread(void *tpool)
+ void * ThreadPool::tpool_thread(void *tpool)
 {
     int rtn=0;
     ThreadPoolWork *my_work = NULL;
