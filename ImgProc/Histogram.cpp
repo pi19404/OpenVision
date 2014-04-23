@@ -207,6 +207,25 @@ for(int i=0;i<size;i++)
 }
 
 
+void Histogram::setMask(Mat mask)
+{
+mask.copyTo(_mask);
+}
+
+
+void Histogram::mergeHistogram(Mat hist,float factor)
+{
+    if(_histMat.empty())
+    {
+        hist.copyTo(_histMat);
+    }
+    else
+    {
+    _histMat=factor*_histMat+(1-factor)*hist;
+    }
+}
+
+
 cv::Mat Histogram::BuildHistogram(cv::Mat srcImage,bool accumulate){
     cv::Mat histMat;
     //compute  histogram
@@ -235,7 +254,10 @@ cv::Mat Histogram::BuildHistogram(cv::Mat srcImage,bool accumulate){
         ranges[i]=x;
         //cerr << x[0] << ":" <<x[1] <<endl;
     }
-    cv::calcHist(&srcImage,1,c, cv::Mat(),_histMat,_channels.size(),h,(const float **)ranges, true, accumulate);
+    if(accumulate==true)
+        _histMat.copyTo(histMat);
+
+    cv::calcHist(&srcImage,1,c,_mask,histMat,_channels.size(),h,(const float **)ranges, true, accumulate);
     for(int i=0;i<size;i++)
     {
         free(ranges[i]);
@@ -248,7 +270,9 @@ cv::Mat Histogram::BuildHistogram(cv::Mat srcImage,bool accumulate){
     //Scalar v=cv::sum(_histMat);
     //cerr << "cumulative" << v[0] <<endl;
     //copy histogram
-    histMat = _histMat.clone();
+    //histMat = _histMat.clone();
+    if(accumulate==true)
+    histMat.copyTo(_histMat);
     //return histogram
     return histMat;
 }
@@ -360,6 +384,48 @@ Mat Histogram::applyKernel(int size,int type)
 
     return output;
 
+
+}
+
+
+
+
+std::vector<int> Histogram::getThreshHist(cv::Mat histMat, float s1, float s2){
+
+
+    std::vector<int> imgThresh;
+    imgThresh.resize(2);
+
+    Scalar s=cv::mean(histMat);
+    float N = s[0]*histMat.cols*histMat.rows;
+    float maxth = (1-s2)*N;
+    float minth = s1*N;
+    int mini=0,maxi=0;
+    float cmini=0,cmaxi=N;
+    bool lower=true,higher=true;
+
+
+    for (int i = 0; i < histMat.rows; i++){
+
+    //if(i>=(int)((float)_histRange[0]/histMat.rows))
+    cmini+= histMat.at<float>(i);
+    //if(i<=(int)((float)_histRange[1]/histMat.rows))
+    cmaxi-= histMat.at<float>(histMat.rows-i);
+
+    if(cmini >= minth && lower==true){
+    mini = i;
+    lower=false;
+    }
+    if(cmaxi <= maxth && higher==true){
+    maxi = histMat.rows-i;
+    higher=false;
+    }
+    if(lower==false && higher ==false )
+    break;
+    }
+    imgThresh[0]=mini;
+    imgThresh[1]=maxi;
+    return imgThresh;
 
 }
 

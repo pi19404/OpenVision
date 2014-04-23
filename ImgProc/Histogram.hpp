@@ -111,8 +111,19 @@ class Histogram
      */
     float compareHist(Histogram hist,int method);
     Mat drawHist();
+    void setMask(Mat mask);
+    void mergeHistogram(Mat hist,float factor);
+
+    void setHist(Mat hist)
+    {
+        hist.copyTo(_histMat);
+    }
+
+    std::vector<int> getThreshHist(cv::Mat histMat, float s1, float s2);
     Mat drawHist(MatND);
     private:
+
+        Mat _mask;
         /**
          * @brief _histMat is temporary matrix used to store the histogram of the image
          */
