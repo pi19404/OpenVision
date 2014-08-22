@@ -10,6 +10,7 @@
 
 #include "pthread.h"
 #include <sys/ioctl.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 
 #define LOG_FILE_NAME_LENGTH 50

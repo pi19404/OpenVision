@@ -1,0 +1,1 @@
+#include "ImgApp/UniStrokeGesture.hpp"

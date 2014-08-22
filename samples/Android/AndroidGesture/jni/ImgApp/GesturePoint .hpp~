@@ -1,0 +1,12 @@
+#include "Common/OpenCVCommon.hpp"
+
+class GesturePoint
+{
+Point2f position;
+double time;
+double getTime()
+Point2f getPosition()
+
+};
+
+
