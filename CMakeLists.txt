@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 PROJECT(OpenVisionLibrary)
-find_package( OpenCV 2.4.5 EXACT)
+find_package( OpenCV 2.4.5 )
 find_library(FFTW_LIBRARY NAMES fftw3f)
 set(FFTW_LIBS "${FFTW_LIBRARY}")
 set(CMAKE_CXX_FLAGS "-g -Wall")
@@ -44,8 +44,8 @@ MACRO(SUBDIRLIST result curdir)
 ENDMACRO()
 
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories("/media/windows/pi19404/OPENCV/Eigen/Eigen")
-include_directories("/media/windows/pi19404/OPENCV/Eigen/")
+include_directories("/opt/Eigen")
+include_directories("/opt/Eigen/")
 
 SUBDIRLIST(SUBDIRS ${PROJECT_SOURCE_DIR})
 FOREACH(subdir ${SUBDIRS})

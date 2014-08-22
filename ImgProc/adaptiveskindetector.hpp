@@ -1,6 +1,7 @@
 #ifndef ADAPTIVESKINDETECTOR_H
 #define ADAPTIVESKINDETECTOR_H
 #include "Common/OpenCVCommon.hpp"
+#include "ImgProc/Histogram.hpp"
 /**
  * @brief The AdaptiveSkinColor class : Class incapsulating adaptive skin color detector
  * based on the paper An adaptive real-time skin detector based on Hue thresholding:
