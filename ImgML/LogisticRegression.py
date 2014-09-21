@@ -42,7 +42,10 @@ rng = numpy.random
 import load_datasets;
 
 
-class LogisticRegression(object):           
+
+
+
+class LogisticRegression1(object):           
      def __init__(self,input,output,n_dimensions,n_classes):
         print '******************************************************'
         print 'initialialising the class LogisticRegression'
@@ -86,7 +89,10 @@ class LogisticRegression(object):
 
      """ Function returns the mean of negative log-likelyhood of the cost function"""
      def negative_log_likelihood(self, y):
-        return -T.mean(T.log(self.logistic)[T.arange(y.shape[0]), y])
+        val=-T.mean(T.log(self.logistic)[T.arange(y.shape[0]), y])
+        
+
+        return val 
 
      def print_params(self):
         print self.W.get_value(borrow=True).T
@@ -172,8 +178,11 @@ class LogisticRegression(object):
                  iter = (iterations - 1) * self.n_train_batches + minibatch_index
                  if(iter+1)%validation_frequency==0:
                      self.validation();
-
-
+                 print minibatch_avg_cost
+                 #print self.W.get_value(borrow=True)[1:10,1];
+                 
+                 
+                 #print self.W.get_value(borrow=True)[:,1:10];
          end_time = time.clock()             
          
          print 'Time Taken to train model'+`(end_time - start_time)`;     
@@ -265,12 +274,12 @@ if __name__ == '__main__':
     x=T.matrix('x');
     y=T.ivector('y');
     """ The mnist dataset in pickel format"""
-    model_name1="/media/LENOVO_/repo/mnist.pkl.gz"
+    model_name1="/home/pi19404/Documents/mnist.pkl.gz"
     
     """ creating object of class Logistic regression"""
     """ input is 28*28 dimension feature vector ,and
     output lables are digits from 0-9 """
-    classifier = LogisticRegression(x,y,28*28,10);
+    classifier = LogisticRegression1(x,y,28*28,10);
     
     """ loading the datasets"""
     [train,test,validate]=load_datasets.load_pickle_data(model_name1);
@@ -280,22 +289,23 @@ if __name__ == '__main__':
     #
     #classifier.init_classifier(model_name1);n_out
     """ Training the classifiers"""
-    classifier.train_classifier(0.13,1000,30);
+    classifier.train_classifier(0.13,50000,10);
     
     """ Saving the model """
     
+   
     classifier.save('1');
     #x=classifier.train[0].get_value(borrow=True)[0];
     #classifier.predict(x);
     
     """ Loading the model"""
-    classifier.load('1')
-    x=train[0].get_value(borrow=True);
-    y=train[1].eval();
-    print 'True class:'+`y`
-    xx,yy=classifier.predict(x);
-    print 'Predicted class:' + `yy`
-    classifier.testing();
+    #classifier.load('1')
+    #x=train[0].get_value(borrow=True);
+    #y=train[1].eval();
+    #print 'True class:'+`y`
+    #xx,yy=classifier.predict(x);
+    #print 'Predicted class:' + `yy`
+    #classifier.testing();
     
     #print classifier.predict(classifier.train[0].get_value(borrow=True)[0])
     
