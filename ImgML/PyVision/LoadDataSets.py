@@ -123,7 +123,7 @@ class LoadDataSets:
             flable=np.array(flable,dtype='float');
             fdata1=[];
             flable1=[];
-            rs = cross_validation.ShuffleSplit(np.shape(fdata)[0], n_iter=1,test_size=0, random_state=0)
+            rs = cross_validation.ShuffleSplit(np.shape(fdata)[0], n_iter=10,test_size=0, random_state=0)
             for r in rs:
                 #print r
                 fdata1=fdata[r[0]];
