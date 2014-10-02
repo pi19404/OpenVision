@@ -69,12 +69,14 @@ class LogisticRegression(object):
         self.output=y;
         return y;
 
-    """ function used for label assigment for predicted index """
+    """ function used for label assigment and output probability for predicted index """
     def lable(self,y):
         return self.labels[y];
 
     def probability(self,y):
         return self.output[y];
+        
+        
     """ function classifies the input vector x into one of output lables """
     """ input is NXD vector then output is NX1 vector """
     def classify(self,x):
@@ -99,6 +101,13 @@ class LogisticRegression(object):
         index=[range(0,np.shape(sigmoid_activation)[0]),y];
         p=sigmoid_activation[index]
         l=-np.mean(np.log(p));
+        
+        if self.Regularization==2:
+            l=l+0.5*self.eta*np.sum(self.W**2);
+        if self.Regularization==1:
+            l=l+self.eta*np.sum(np.abs(self.W));
+        
+        
         return l;
 ##        self.validate(self.x,self.y)     
     """ function to set the training data for current computation loop"""
@@ -110,9 +119,16 @@ class LogisticRegression(object):
     def compute_gradients(self,out,y,x):
         out=(np.reshape(out,(np.shape(out)[0],1)));                
         out[y]=out[y]-1;   
-        W=out*x.T;               
+        W=out*x.T;
+        if self.Regularization==2:
+           W=W+self.eta*self.W;
+        if self.Regularization==1:
+            W=W+self.eta*np.sign(W);
+           #print np.shape(r),np.shape(W)
+           #dd
         res=np.vstack((W.T,out.flatten()))
         return res;
+        
 
     """ function to compute the gradient of loss function over all input samples
         params is optional input parameter passed to the classifier,which is useful in cases 
@@ -127,17 +143,19 @@ class LogisticRegression(object):
         mean1=mean1.T.flatten();
         return mean1;
 
-
+    """ function to retrieve the params """
     def get_params(self):
         return self.params;
-        
+
+
+    """ function to set the params """        
     def set_params(self,params):
         self.params=params;
         
     
 
     """ function to update the weights given parameter array """        
-    def update_params(self,params):
+    def update_params(self,params=None):
         if params==None:
             return;
         nparam=self.n_dimensions+1;
@@ -155,7 +173,9 @@ class LogisticRegression(object):
         param1[:,nparam-1]=b;
         return param1.flatten();
    
-    def callback(self,w,num,x,y,flag):       
+    """ callback function from the optimizer ,can be used to display status,update parameters"""
+    def callback(self,w,num,x,y,flag,eta,error=None):       
+        self.eta=eta;
         self.params=w;
         self.update_params(self.params);
         if flag==0:
@@ -163,8 +183,11 @@ class LogisticRegression(object):
             l=self.negative_log_likelihood(w);
             print "Loss function   : ",l;
         
-  
-        
+    """ the function that performs learning,computing gradients and updating parameters """
+    def learn(self,update):
+        grads=self.gradients();
+        params=update(self.params,grads)
+        return [params,grads];
 
 
     """ the function performs training for logistic regression classifier """        
@@ -175,9 +198,9 @@ class LogisticRegression(object):
             n_dimensions=np.shape(x)[1];
             self.initialize_parameters(n_dimensions,n_classes);
                 
-        opti=Optimizer.Optimizer(10,"SGD",1,600);    
+        opti=Optimizer.Optimizer(1000,"SGD",1,2000,0.13,2000*0.99);    
         opti.set_datasets(train,test,validate);
-        opti.set_functions(self.negative_log_likelihood,self.set_training_data,self.classify,self.gradients,self.get_params,self.callback);
+        opti.set_functions(self.negative_log_likelihood,self.set_training_data,self.classify,self.callback,self.learn,None,None);
         opti.run();
             
         #self.labels =np.unique(train[1]);
@@ -188,7 +211,7 @@ class LogisticRegression(object):
         #sgd1.run();
         
       
-
+""" main test function """
 if __name__ == "__main__":    
      model_name1="/home/pi19404/Documents/mnist.pkl.gz"
      data=LoadDataSets.LoadDataSets();
@@ -196,7 +219,8 @@ if __name__ == "__main__":
      
      x=train[0].get_value(borrow=True);
      y=train[1].eval();     
-     train=[x,y];
+     train=[x[0:5000],y[0:5000]];
+     #train=[x,y];
 
      x=test[0].get_value(borrow=True);
      y=test[1].eval();
@@ -207,7 +231,7 @@ if __name__ == "__main__":
      validate=[x,y];
      
      classifier=LogisticRegression(0,0);
-     classifier.Regularization=0;
+     classifier.Regularization=1;
      classifier.train(train,test,validate);
 
      print np.shape(x),np.shape(y);
