@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 """
-..module ::Logistic Regression
-File    : Logistic Regression 
-Created on Fri Aug 29 17:12:50 2014
-
-@author: pi19404
-
-
+Logistic Regression
 """
+
+# Author: pi19404 <pi19404@gmail.com>
+#         
+#       
+#        
+#         
 
 import numpy
 import numpy as np
@@ -30,8 +29,9 @@ import Optimizer
 
 " The class encaspulates the Logistic Regression Classification Algorithms "
 class LogisticRegression(object):
-    """ initialize the parametes of the model """    
-    def __init__(self,n_in,n_out,labels=None,Regularization=2,eta=0.01):
+       
+    def __init__(self,n_in,n_out,labels=None,Regularization=2,eta=0.0001):
+        """ initialize the parametes of the model """ 
         if(n_in!=0):
             self.n_classes=n_out;
             self.n_dimensions=n_in;
@@ -59,6 +59,8 @@ class LogisticRegression(object):
         self.b=numpy.zeros([n_out,1],dtype=float);
         self.params=numpy.zeros([n_out,n_in+1],dtype=float);
         self.params=self.params.flatten();
+        self.nparams=self.n_dimensions+1;
+        
         #print np.shape(self.W),np.shape(self.b)
        
        
@@ -92,7 +94,7 @@ class LogisticRegression(object):
     """ function computes the negative log likelyhood over input dataset 
          params is optional argument to pass parameter to classifier 
         ,useful in cases of iterative optimization routines for function evaluations like scipy.optimization package """
-    def negative_log_likelihood(self,params):
+    def negative_log_likelihood(self,params=None):
         # args contains the training data
         x,y=self.args;
                  
@@ -158,6 +160,7 @@ class LogisticRegression(object):
     def update_params(self,params=None):
         if params==None:
             return;
+        self.params=params;
         nparam=self.n_dimensions+1;
         param1=params.reshape(-1,nparam);        
         self.W=param1[:,0:nparam-1];
@@ -184,10 +187,14 @@ class LogisticRegression(object):
             print "Loss function   : ",l;
         
     """ the function that performs learning,computing gradients and updating parameters """
-    def learn(self,update):
+    def learn(self,update=None):
         grads=self.gradients();
-        params=update(self.params,grads)
-        return [params,grads];
+        params=[];
+        if update!=None:
+            params=update(self.params,grads)
+        nparam=self.n_dimensions+1;
+        error=grads.reshape(-1,nparam)[:,nparam-1];  
+        return [params,error];
 
 
     """ the function performs training for logistic regression classifier """        
@@ -215,7 +222,8 @@ class LogisticRegression(object):
 if __name__ == "__main__":    
      model_name1="/home/pi19404/Documents/mnist.pkl.gz"
      data=LoadDataSets.LoadDataSets();
-     [train,test,validate]=data.load_pickle_data(model_name1);
+     #[train,test,validate]=data.load_pickle_data(model_name1);
+     [train,test,validate]=data.load_sklearn_data("digits");
      
      x=train[0].get_value(borrow=True);
      y=train[1].eval();     
