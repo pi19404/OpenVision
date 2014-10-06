@@ -1,0 +1,13 @@
+#include "ImgApp/GesturePoint.hpp"
+
+
+class UniStrokeGesture
+{
+vector<vector<GesturePoint>> gesture;
+string name;
+
+
+
+
+
+}

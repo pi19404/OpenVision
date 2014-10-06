@@ -1,0 +1,22 @@
+neon_interface:
+
+      # r0: Ptr to destination data
+      # r1: Ptr to source data
+      # r2: Iteration count:
+
+      push   	    {,lr}
+      mul r6,r4,r5
+      lsr r6, r6, #3
+
+  .loop:
+
+      # load 8 pixels:
+      vld3.8      {d0-d2}, [r0]!
+      vst1.8      {d0}, [r1]!
+      vst1.8      {d1}, [r2]!
+      vst1.8      {d2}, [r3]!
+
+      subs        r6, r6, #1
+      bne         .loop
+
+      pop         {, pc }

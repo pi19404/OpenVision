@@ -1,0 +1,50 @@
+.TH "jni/OpenVision.cpp" 3 "Wed Aug 20 2014" "Version 0.0.1" "AndroidGesture" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+jni/OpenVision.cpp \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <jni\&.h>\fP
+.br
+\fC#include 'ImgApp/GesturePoint\&.hpp'\fP
+.br
+\fC#include 'ImgApp/UniStrokeGestureRecognizer\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "float \fBgetFloat\fP (JNIEnv *env, jobject value)"
+.br
+.ti -1c
+.RI "long \fBgetLong\fP (JNIEnv *env, jobject value)"
+.br
+.ti -1c
+.RI "JNIEXPORT void JNICALL \fBCom_OpemVision_AndroidGesture_CreateGestureActivity_setUserList\fP (JNIEnv *env, jobject jthiz, jobject locations, jobject time, jstring name)"
+.br
+.ti -1c
+.RI "JNIEXPORT void JNICALL \fBCom_OpemVision_AndroidGesture_CreateGestureActivity_setDirectory\fP (JNIEnv *env, jobject jthiz, jstring name)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBUniStrokeGestureRecognizer\fP \fBrecognizer\fP"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "JNIEXPORT void JNICALL \fBCom_OpemVision_AndroidGesture_CreateGestureActivity_setDirectory\fP (JNIEnv *env, jobjectjthiz, jstringname)"
+.SS "JNIEXPORT void JNICALL \fBCom_OpemVision_AndroidGesture_CreateGestureActivity_setUserList\fP (JNIEnv *env, jobjectjthiz, jobjectlocations, jobjecttime, jstringname)"
+.SS "float \fBgetFloat\fP (JNIEnv *env, jobjectvalue)"
+.SS "long \fBgetLong\fP (JNIEnv *env, jobjectvalue)"
+.SH "Variable Documentation"
+.PP 
+.SS "\fBUniStrokeGestureRecognizer\fP \fBrecognizer\fP"
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AndroidGesture from the source code\&.

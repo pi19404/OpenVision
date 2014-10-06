@@ -1,0 +1,6 @@
+file(GLOB SRC
+    "*.cpp"
+)
+target_link_libraries(ImgFeatures  ${OpenCV_LIBS} ${SRC})
+set(CMAKE_CXX_FLAGS "-g ")
+
