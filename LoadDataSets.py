@@ -64,11 +64,17 @@ import theano.tensor as T
 import glob
 import re
 import pickle
-
+from sklearn.datasets import load_digits
+from sklearn.datasets import fetch_20newsgroups
 import sys  
 import csv
 rng = numpy.random
 
+
+def size_mb(docs):
+    return sum(len(s.encode('utf-8')) for s in docs) / 1e6
+    
+    
 class LoadDataSets:
     def load(self,model_name):
         self.print_debug();
@@ -81,6 +87,36 @@ class LoadDataSets:
         self.n_out=pickle.load(pkl_file);
         self.n_classes=pickle.load(pkl_file);
         self.n_out=self.n_classes;   
+    
+
+    
+    
+    def load_sklearn_data(self,name):
+        if name == "digits":
+            training = fetch_20newsgroups(subset='train',shuffle=True,random_state=42);
+            testing = fetch_20newsgroups(subset='test',shuffle=True,random_state=100);
+            validation = fetch_20newsgroups(subset='test',shuffle=True,random_state=200);
+            categories = training.target_names
+            data_train_size_mb = size_mb(training.data)
+            data_test_size_mb = size_mb(testing.data)
+            data_test_size_mb = size_mb(validation.data)
+            
+            print("%d documents - %0.3fMB (training set)" % (
+                len(training.data), data_train_size_mb))
+            print("%d documents - %0.3fMB (test set)" % (
+                len(testing.data), data_test_size_mb))
+
+            print("%d documents - %0.3fMB (test set)" % (
+                len(validation.data), data_test_size_mb))
+                
+            print("%d categories" % len(categories))
+            print()        
+            
+            training=[training.data,training.target_names]
+            testing=[testing.data,testing.target_names]
+            validation=[validation.data,validation.target_names]
+            
+            return [training,testing,validation];
         
     def load_pickle_data(self,dataset):
              

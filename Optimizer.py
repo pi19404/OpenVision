@@ -4,6 +4,7 @@ Created on Wed Oct  1 17:34:57 2014
 
 @author: pi19404
 """
+
 from sklearn.metrics import confusion_matrix
 import sklearn.metrics as met
 import numpy as np
@@ -139,7 +140,7 @@ class Optimizer(object):
             x=self.training[0];
             y=self.testing[0];        
             self.iter=self.iter+1;            
-           
+            self.validation_iter=10;
             if self.iter % self.validation_iter==0:        
                 flag=0;
                 error1=self.error(self.training);
@@ -165,9 +166,9 @@ class Optimizer(object):
             
             #done looping flag presently used only for minibatch SGD algorithm
             
-            if  self.patience <= self.iter  :
-                self.done_looping = True
-                return          
+            #if  self.patience <= self.iter  :
+                #self.done_looping = True
+                #return          
             
             flag=1;            
             self.callback(w,self.iter,x,y,flag,self.eta/self.batch_size);
@@ -183,8 +184,10 @@ class Optimizer(object):
             self.setdata(args);
             return;
             
-    def update(self,params,grads):
-        params=params-self.learning_rate*grads;
+    def update(self,params,grads,rate=0):
+        if rate==0:
+            rate=self.learning_rate;
+        params=params-rate*grads;
         return params;
         
     def run(self):
