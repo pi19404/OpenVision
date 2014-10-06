@@ -20,7 +20,7 @@ import cPickle as pickle
 
 
 __author__ = "pi19404 <pi19404@gmail.com>"
-__version__ = "0.0.2"
+__version__ = "0.0.1"
 
 def sigmoid(X):
     """ This function applies sigmoid transformation on each element of input vector 
