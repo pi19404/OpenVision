@@ -6,13 +6,13 @@ OpenVisionLibrary : Version 0.0
 A Open source platform for developement and learning of image processing and computer vision algorithms.
 Focus will be to develope modular,object oriented approach and scalable architecture for computer vision application.
 
-It is attempt at a opensource C/C++ Library developed in C/C++ using OpenCV,Eigen etc  providing modular interface
+It is an attempt at a opensource C/C++ Library developed in C/C++ using OpenCV,Eigen etc  providing modular interface
 for image processing,computer vision,machine learning applications.
 
 In the initial version a high level interface to opencv libraries will be developed and with time the opencv
 interface will be replaced with sutiable alternatives.
 
-OpenCv has a large repository but most of code is difficult to interpret due to lack of comments and no implementation detail at all. This platform will focus on documentation of algorithms and implementation details so that 
+OpenCV has a large repository but most of code is difficult to interpret due to lack of comments and no implementation detail at all. This platform will focus on documentation of algorithms and implementation details so that 
 it can also serve as a good learning platform.
 
 The code consists of 16841 lines of code as of 1st March 2014
@@ -68,7 +68,6 @@ Topics in progress
 * Gaussian Mixture Models and EM Algorithm
 * HMM Training Using Vitrebi training
 * HMM Training using Bahum Welch algorithm
-* 
 
 
 
